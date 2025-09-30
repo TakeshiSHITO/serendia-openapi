@@ -1,3 +1,4 @@
+# 共有用の短縮リンク発行と解決(302)。可視性(unlisted/public)や期限の指定に対応。
 /shares/post:
   post:
     tags: [Sharing]

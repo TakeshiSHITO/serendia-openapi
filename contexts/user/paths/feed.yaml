@@ -1,3 +1,5 @@
+# スワイプ体験: セッション開始→フレーム取得→スワイプ登録(冪等性)→巻き戻し→SSE通知。
+# フレームはレンダ状態(PREVIEW/FINAL/FAILED)とカード(look)を含む。
 /session/create:
   post:
     tags: [Feed]

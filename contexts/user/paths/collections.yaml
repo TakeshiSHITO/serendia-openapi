@@ -1,3 +1,4 @@
+# 気に入ったルックの保存/解除と一覧。カーソルページネーション対応。
 /collections/list:
   get:
     tags: [Collections]

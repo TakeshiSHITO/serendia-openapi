@@ -1,4 +1,5 @@
-follows_list:
+# クリエイターのフォロー/解除と自分のフォロー一覧。
+/follows/list:
   get:
     tags: [Follows]
     security: [{ bearerAuth: [] }]
@@ -15,7 +16,7 @@ follows_list:
             schema:
               $ref: ../schemas/follows.yaml#/components/schemas/PageOfFollows
 
-follows_item:
+/follows/item:
   post:
     tags: [Follows]
     security: [{ bearerAuth: [] }]

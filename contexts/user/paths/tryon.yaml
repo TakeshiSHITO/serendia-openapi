@@ -1,3 +1,4 @@
+# 画像生成(試着)リクエストの作成/進捗取得。非同期実行を前提。
 /tryon/create:
   post:
     tags: [TryOn]
