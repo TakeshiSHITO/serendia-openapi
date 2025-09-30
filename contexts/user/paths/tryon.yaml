@@ -1,0 +1,38 @@
+/tryon/create:
+  post:
+    tags: [TryOn]
+    security: [{ bearerAuth: [] }]
+    summary: Create a try-on request
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnCreateRequest }
+    responses:
+      '202':
+        description: Accepted
+        content:
+          application/json:
+            schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
+
+/tryon/get:
+  get:
+    tags: [TryOn]
+    security: [{ bearerAuth: [] }]
+    summary: Get try-on request status/result
+    parameters:
+      - in: path
+        name: requestId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
+      '404':
+        description: Not found
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }

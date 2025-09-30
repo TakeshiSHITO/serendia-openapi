@@ -1,0 +1,18 @@
+openapi: 3.0.3
+info:
+  title: Serendia Shop API
+  version: 1.0.0
+  description: Shop context API for Serendia platform
+
+servers:
+  - url: https://api.serendia.com/shop
+    description: Production server
+
+paths: {}
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

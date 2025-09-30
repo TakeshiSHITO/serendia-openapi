@@ -1,0 +1,31 @@
+components:
+  schemas:
+    RetentionPolicy:
+      type: string
+      enum: [SESSION_ONLY, DAYS_30, DAYS_365]
+    Consent:
+      type: object
+      properties:
+        scope: { type: string }
+        expiresAt: { type: string, format: date-time, nullable: true }
+    SelfAsset:
+      type: object
+      properties:
+        assetId: { type: string, format: uuid }
+        createdAt: { type: string, format: date-time }
+        retention: { $ref: '#/components/schemas/RetentionPolicy' }
+    SignUrlResponse:
+      type: object
+      properties:
+        uploadUrl: { type: string, format: uri }
+        publicUrl: { type: string, format: uri, nullable: true }
+    RegisterAssetRequest:
+      type: object
+      required: [retention, purpose]
+      properties:
+        publicUrl: { type: string, format: uri, nullable: true }
+        storageKey: { type: string, nullable: true }
+        purpose: { type: string, enum: [tryon] }
+        retention: { $ref: '#/components/schemas/RetentionPolicy' }
+        consent:
+          $ref: '#/components/schemas/Consent'

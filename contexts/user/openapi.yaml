@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: FashionTinder User API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+tags:
+  - name: Auth
+  - name: Profile
+  - name: SelfAssets
+  - name: TryOn
+  - name: Feed
+  - name: Looks
+  - name: Collections
+  - name: Follows
+  - name: Sharing
+  - name: Cart
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /auth/signup:
+    $ref: ./paths/auth.yaml#/~1auth~1signup
+  /auth/login:
+    $ref: ./paths/auth.yaml#/~1auth~1login
+  /auth/refresh:
+    $ref: ./paths/auth.yaml#/~1auth~1refresh
+  /auth/logout:
+    $ref: ./paths/auth.yaml#/~1auth~1logout
+
+  /me:
+    $ref: ./paths/me.yaml#/me_root
+
+  /me/self-assets/sign-url:
+    $ref: ./paths/self_assets.yaml#/sign_url
+  /me/self-assets:
+    $ref: ./paths/self_assets.yaml#/assets_root
+  /me/self-assets/{assetId}:
+    $ref: ./paths/self_assets.yaml#/asset_item
+
+  /tryon/requests:
+    $ref: ./paths/tryon.yaml#/tryon_create
+  /tryon/requests/{requestId}:
+    $ref: ./paths/tryon.yaml#/tryon_get
+
+  /canvas/sessions:
+    $ref: ./paths/feed.yaml#/session_create
+  /canvas/sessions/{sessionId}/frames:
+    $ref: ./paths/feed.yaml#/frames_get
+  /canvas/sessions/{sessionId}/swipes:
+    $ref: ./paths/feed.yaml#/swipes_post
+  /canvas/sessions/{sessionId}/rewind:
+    $ref: ./paths/feed.yaml#/rewind_post
+  /canvas/sessions/{sessionId}/events:
+    $ref: ./paths/feed.yaml#/events_stream
+
+  /looks/{lookId}:
+    $ref: ./paths/looks.yaml#/looks_get
+  /search/looks:
+    $ref: ./paths/looks.yaml#/search_looks
+  /looks/{lookId}/outbound-click:
+    $ref: ./paths/looks.yaml#/outbound_click
+
+  /me/collections:
+    $ref: ./paths/collections.yaml#/collections_list
+  /collections/{lookId}:
+    $ref: ./paths/collections.yaml#/collections_item
+
+  /me/follows:
+    $ref: ./paths/follows.yaml#/follows_list
+  /follows/{creatorId}:
+    $ref: ./paths/follows.yaml#/follows_item
+
+  /shares:
+    $ref: ./paths/sharing.yaml#/shares_post
+  /s/{shortCode}:
+    $ref: ./paths/sharing.yaml#/share_resolve
+
+  /me/cart:
+    $ref: ./paths/cart.yaml#/cart_get
+  /me/cart/items:
+    $ref: ./paths/cart.yaml#/cart_items_post
+  /me/cart/items/{lineId}:
+    $ref: ./paths/cart.yaml#/cart_items_line

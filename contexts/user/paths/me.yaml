@@ -1,0 +1,27 @@
+/me/root:
+  get:
+    tags: [Profile]
+    security: [{ bearerAuth: [] }]
+    summary: Get my profile
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/profile.yaml#/components/schemas/Profile }
+  patch:
+    tags: [Profile]
+    security: [{ bearerAuth: [] }]
+    summary: Update my profile (body measurements & preferences)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/profile.yaml#/components/schemas/ProfileUpdate }
+    responses:
+      '200': { description: Updated }
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }

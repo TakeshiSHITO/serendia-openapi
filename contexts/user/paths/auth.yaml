@@ -1,0 +1,78 @@
+/auth/signup:
+  post:
+    tags: [Auth]
+    summary: Sign up with email/password
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/SignupRequest }
+    responses:
+      '201':
+        description: Account created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/TokensWithRole }
+      '409':
+        description: Email already in use
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+
+/auth/login:
+  post:
+    tags: [Auth]
+    summary: Login with email/password
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/LoginRequest }
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/TokensWithRole }
+      '401':
+        description: Invalid credentials
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+
+/auth/refresh:
+  post:
+    tags: [Auth]
+    summary: Refresh access token
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/RefreshRequest }
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/Tokens }
+      '401':
+        description: Invalid/expired refresh token
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+
+/auth/logout:
+  post:
+    tags: [Auth]
+    security: [{ bearerAuth: [] }]
+    summary: Logout and revoke refresh token
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              refreshToken: { type: string }
+    responses:
+      '204': { description: No Content }

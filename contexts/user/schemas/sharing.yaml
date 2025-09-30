@@ -1,0 +1,20 @@
+components:
+  schemas:
+    ShareCreateRequest:
+      type: object
+      required: [resourceType, resourceId]
+      properties:
+        resourceType: { type: string, enum: [look, collection, creator] }
+        resourceId: { type: string, format: uuid }
+        visibility: { type: string, enum: [public, unlisted], default: unlisted }
+        expiresInHours: { type: integer, minimum: 1, maximum: 720, nullable: true }
+    Share:
+      type: object
+      properties:
+        shareId: { type: string, format: uuid }
+        url: { type: string, format: uri }
+        resourceType: { type: string, enum: [look, collection, creator] }
+        resourceId: { type: string, format: uuid }
+        visibility: { type: string, enum: [public, unlisted] }
+        expiresAt: { type: string, format: date-time, nullable: true }
+        createdAt: { type: string, format: date-time }

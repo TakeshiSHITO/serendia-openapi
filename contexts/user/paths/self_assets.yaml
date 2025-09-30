@@ -1,0 +1,55 @@
+/sign/url:
+  post:
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: Issue a signed URL for direct upload
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SignUrlResponse }
+
+/assets/root:
+  post:
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: Register uploaded asset with consent
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/RegisterAssetRequest }
+    responses:
+      '201':
+        description: Created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
+  get:
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: List my self assets
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
+/asset/item:
+  delete:
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: Delete a self asset
+    parameters:
+      - in: path
+        name: assetId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { description: No Content }
