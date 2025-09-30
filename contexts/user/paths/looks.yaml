@@ -1,0 +1,65 @@
+/looks/get:
+  get:
+    tags: [Looks]
+    summary: Lookの詳細を取得
+    description: 指定したIDのLookの詳細情報を取得します。コーディネートの画像や商品情報が含まれます。
+    parameters:
+      - in: path
+        name: lookId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/looks.yaml#/components/schemas/LookCard }
+      '404':
+        description: Not found
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+
+/search/looks:
+  get:
+    tags: [Looks]
+    summary: Lookを検索
+    description: キーワード、タグ、ブランド、価格帯などの条件でLookを検索します。カーソルページネーションに対応しています。
+    parameters:
+      - in: query
+        name: query
+        schema: { type: string }
+      - in: query
+        name: tags
+        schema: { type: string, description: Comma-separated tags }
+      - in: query
+        name: brand
+        schema: { type: string }
+      - in: query
+        name: priceMin
+        schema: { type: number }
+      - in: query
+        name: priceMax
+        schema: { type: number }
+      - $ref: ../schemas/common.yaml#/components/parameters/Cursor
+      - $ref: ../schemas/common.yaml#/components/parameters/Limit
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/looks.yaml#/components/schemas/PageOfLooks }
+
+/outbound/click:
+  post:
+    tags: [Looks]
+    security: [{ bearerAuth: [] }]
+    summary: 外部購入リンクのクリックを記録
+    description: ユーザーが商品購入のために外部サイトへ遷移したことを記録します。アフィリエイトトラッキングに使用されます。
+    parameters:
+      - in: path
+        name: lookId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { description: No Content }

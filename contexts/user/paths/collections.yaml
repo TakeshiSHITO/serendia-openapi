@@ -1,0 +1,46 @@
+/collections/list:
+  get:
+    tags: [Collections]
+    security: [{ bearerAuth: [] }]
+    summary: 保存したLookの一覧を取得
+    description: ユーザーがコレクションに保存したすべてのLookをカーソルページネーションで取得します。
+    parameters:
+      - $ref: ../schemas/common.yaml#/components/parameters/Cursor
+      - $ref: ../schemas/common.yaml#/components/parameters/Limit
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/collections.yaml#/components/schemas/PageOfCollection }
+
+/collections/item:
+  post:
+    tags: [Collections]
+    security: [{ bearerAuth: [] }]
+    summary: Lookをコレクションに保存
+    description: 指定したLookをユーザーのコレクションに保存します。お気に入りとして後で見返すことができます。
+    parameters:
+      - in: path
+        name: lookId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '201': { description: Created }
+      '409':
+        description: Already saved
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+  delete:
+    tags: [Collections]
+    security: [{ bearerAuth: [] }]
+    summary: 保存したLookを削除
+    description: コレクションから指定したLookを削除します。削除後は一覧に表示されなくなります。
+    parameters:
+      - in: path
+        name: lookId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { description: No Content }

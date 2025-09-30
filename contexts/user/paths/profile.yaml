@@ -1,0 +1,34 @@
+/profile/me:
+  get:
+    tags: [Profile]
+    security: [{ bearerAuth: [] }]
+    summary: 自分のプロフィールを取得
+    description: ログイン中のユーザーのプロフィール情報を取得します。身体測定値や設定などの個人情報が含まれます。
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/profile.yaml#/components/schemas/Profile }
+
+  patch:
+    tags: [Profile]
+    security: [{ bearerAuth: [] }]
+    summary: プロフィールを更新
+    description: ログイン中のユーザーのプロフィール情報を更新します。身体測定値や好みの設定などを変更できます。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/profile.yaml#/components/schemas/ProfileUpdate }
+    responses:
+      '200':
+        description: Updated
+        content:
+          application/json:
+            schema: { $ref: ../schemas/profile.yaml#/components/schemas/Profile }
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }

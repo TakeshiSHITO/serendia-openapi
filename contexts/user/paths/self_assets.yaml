@@ -2,7 +2,8 @@
   post:
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
-    summary: Issue a signed URL for direct upload
+    summary: 直接アップロード用の署名付きURLを発行
+    description: ユーザーの写真などのアセットをクラウドストレージに直接アップロードするための署名付きURLを発行します。
     responses:
       '200':
         description: OK
@@ -14,7 +15,8 @@
   post:
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
-    summary: Register uploaded asset with consent
+    summary: アップロードしたアセットを同意付きで登録
+    description: 署名付きURLでアップロードしたアセットをシステムに登録します。利用規約への同意情報も含めて保存されます。
     requestBody:
       required: true
       content:
@@ -29,7 +31,8 @@
   get:
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
-    summary: List my self assets
+    summary: 自分のアセット一覧を取得
+    description: ログイン中のユーザーが登録したすべてのアセット（写真など）の一覧を取得します。
     responses:
       '200':
         description: OK
@@ -45,7 +48,8 @@
   delete:
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
-    summary: Delete a self asset
+    summary: アセットを削除
+    description: 指定したIDのアセットをシステムから削除します。削除されたアセットは復元できません。
     parameters:
       - in: path
         name: assetId

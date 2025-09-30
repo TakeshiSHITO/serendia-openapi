@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^20.0.0",
@@ -6,6 +7,6 @@
     "husky": "^9.1.7"
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky install"
   }
 }

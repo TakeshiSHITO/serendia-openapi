@@ -1,0 +1,99 @@
+/session/create:
+  post:
+    tags: [Feed]
+    security: [{ bearerAuth: [] }]
+    summary: スワイプセッションを開始
+    description: 新しいスワイプセッションを開始します。決定的なシーケンスでLookが表示されます。
+    responses:
+      '201':
+        description: Created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/feed.yaml#/components/schemas/SessionCreated }
+
+/frames/get:
+  get:
+    tags: [Feed]
+    security: [{ bearerAuth: [] }]
+    summary: カーソル位置周辺のフレームを取得
+    description: 指定したカーソル位置の前後のフレーム（Look）を取得します。スワイプUIで表示するコンテンツを読み込みます。
+    parameters:
+      - in: path
+        name: sessionId
+        required: true
+        schema: { type: string, format: uuid }
+      - $ref: ../schemas/common.yaml#/components/parameters/Cursor
+      - in: query
+        name: window
+        schema: { type: integer, minimum: 1, maximum: 5, default: 3 }
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/feed.yaml#/components/schemas/PageOfFrames }
+
+/swipes/post:
+  post:
+    tags: [Feed]
+    security: [{ bearerAuth: [] }]
+    summary: スワイプアクションを記録
+    description: ユーザーのスワイプ操作（いいね/スキップ/スーパーいいね）を記録します。べき等性キーで重複防止されます。
+    parameters:
+      - in: path
+        name: sessionId
+        required: true
+        schema: { type: string, format: uuid }
+      - $ref: ../schemas/common.yaml#/components/parameters/IdempotencyKey
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/feed.yaml#/components/schemas/SwipeRequest }
+    responses:
+      '201': { description: Created }
+      '200': { description: Updated }
+      '422':
+        description: Rule violation
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+
+/rewind/post:
+  post:
+    tags: [Feed]
+    security: [{ bearerAuth: [] }]
+    summary: 最後のスワイプを巻き戻す
+    description: 直前のスワイプアクションを取り消します。1回のみ実行可能です。
+    parameters:
+      - in: path
+        name: sessionId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '200': { description: OK }
+      '409':
+        description: Conflict (nothing to rewind)
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+
+/events/stream:
+  get:
+    tags: [Feed]
+    security: [{ bearerAuth: [] }]
+    summary: フレーム更新のためのServer-Sent Eventsストリーム
+    description: フレームのアップグレード情報をリアルタイムで受信するためのSSEストリームを開始します。
+    parameters:
+      - in: path
+        name: sessionId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '200':
+        description: text/event-stream
+        content:
+          text/event-stream:
+            schema:
+              type: string
+              description: SSE event stream lines

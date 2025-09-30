@@ -1,7 +1,8 @@
 /auth/signup:
   post:
     tags: [Auth]
-    summary: Sign up with email/password
+    summary: メールアドレスとパスワードで新規登録
+    description: 新規ユーザーアカウントを作成します。メールアドレスとパスワードを受け取り、アクセストークンとリフレッシュトークンを返します。
     requestBody:
       required: true
       content:
@@ -22,7 +23,8 @@
 /auth/login:
   post:
     tags: [Auth]
-    summary: Login with email/password
+    summary: メールアドレスとパスワードでログイン
+    description: 既存のユーザーアカウントでログインします。認証情報を受け取り、アクセストークンとリフレッシュトークンを返します。
     requestBody:
       required: true
       content:
@@ -43,7 +45,8 @@
 /auth/refresh:
   post:
     tags: [Auth]
-    summary: Refresh access token
+    summary: アクセストークンを更新
+    description: リフレッシュトークンを使用して新しいアクセストークンを発行します。アクセストークンの有効期限が切れた際に使用します。
     requestBody:
       required: true
       content:
@@ -65,7 +68,8 @@
   post:
     tags: [Auth]
     security: [{ bearerAuth: [] }]
-    summary: Logout and revoke refresh token
+    summary: ログアウトしてリフレッシュトークンを無効化
+    description: ユーザーをログアウトし、指定されたリフレッシュトークンを無効化します。これにより、そのトークンを使用した新しいアクセストークンの発行ができなくなります。
     requestBody:
       required: true
       content:

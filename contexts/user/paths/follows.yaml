@@ -1,0 +1,47 @@
+follows_list:
+  get:
+    tags: [Follows]
+    security: [{ bearerAuth: [] }]
+    summary: フォロー中のクリエイター一覧を取得
+    description: ユーザーがフォローしているクリエイターの一覧をカーソルページネーションで取得します。
+    parameters:
+      - $ref: ../schemas/common.yaml#/components/parameters/Cursor
+      - $ref: ../schemas/common.yaml#/components/parameters/Limit
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/follows.yaml#/components/schemas/PageOfFollows
+
+follows_item:
+  post:
+    tags: [Follows]
+    security: [{ bearerAuth: [] }]
+    summary: クリエイターをフォロー
+    description: 指定したクリエイターをフォローします。フォローすることでそのクリエイターの新着Lookを優先的に受け取れます。
+    parameters:
+      - in: path
+        name: creatorId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '201': { description: Created }
+      '409':
+        description: Already following
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+  delete:
+    tags: [Follows]
+    security: [{ bearerAuth: [] }]
+    summary: クリエイターのフォローを解除
+    description: 指定したクリエイターのフォローを解除します。解除後はフォロー一覧から削除されます。
+    parameters:
+      - in: path
+        name: creatorId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { description: No Content }

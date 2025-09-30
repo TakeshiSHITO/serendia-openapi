@@ -1,0 +1,70 @@
+/cart/get:
+  get:
+    tags: [Cart]
+    security: [{ bearerAuth: [] }]
+    summary: カートの内容を取得
+    description: ログイン中のユーザーのショッピングカートに入っているアイテムの一覧を取得します。
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
+
+/cart/items/post:
+  post:
+    tags: [Cart]
+    security: [{ bearerAuth: [] }]
+    summary: カートにアイテムを追加
+    description: 指定したアイテムをショッピングカートに追加します。更新されたカートの内容が返されます。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/cart.yaml#/components/schemas/AddCartItemRequest }
+    responses:
+      '200':
+        description: Updated cart
+        content:
+          application/json:
+            schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
+      '422':
+        description: Rule violation
+        content:
+          application/json:
+            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+
+/cart/items/line:
+  patch:
+    tags: [Cart]
+    security: [{ bearerAuth: [] }]
+    summary: カート内アイテムの数量を更新
+    description: カート内の指定したアイテムの数量を変更します。更新されたカートの内容が返されます。
+    parameters:
+      - in: path
+        name: lineId
+        required: true
+        schema: { type: string, format: uuid }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/cart.yaml#/components/schemas/UpdateCartItemRequest }
+    responses:
+      '200':
+        description: Updated cart
+        content:
+          application/json:
+            schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
+  delete:
+    tags: [Cart]
+    security: [{ bearerAuth: [] }]
+    summary: カートからアイテムを削除
+    description: カートから指定したアイテムを削除します。削除後はカートに表示されなくなります。
+    parameters:
+      - in: path
+        name: lineId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { description: No Content }

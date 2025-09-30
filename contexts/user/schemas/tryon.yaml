@@ -1,0 +1,22 @@
+components:
+  schemas:
+    RenderTier:
+      type: string
+      enum: [PREVIEW, FINAL]
+    TryOnStatus:
+      type: string
+      enum: [PENDING, SUCCEEDED, FAILED]
+    TryOnCreateRequest:
+      type: object
+      required: [assetId, variantId, tier]
+      properties:
+        assetId: { type: string, format: uuid }
+        variantId: { type: string, format: uuid }
+        tier: { $ref: '#/components/schemas/RenderTier' }
+    TryOnRequest:
+      type: object
+      properties:
+        requestId: { type: string, format: uuid }
+        status: { $ref: '#/components/schemas/TryOnStatus' }
+        tier: { $ref: '#/components/schemas/RenderTier' }
+        imageUrl: { type: string, format: uri, nullable: true }

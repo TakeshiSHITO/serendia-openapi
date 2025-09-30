@@ -1,0 +1,31 @@
+components:
+  schemas:
+    BodyMeasurement:
+      type: object
+      properties:
+        heightCm: { type: number }
+        chestCm:  { type: number }
+        waistCm:  { type: number }
+        hipCm:    { type: number }
+        footMm:   { type: number, nullable: true }
+    Profile:
+      type: object
+      properties:
+        userId: { type: string, format: uuid }
+        gender: { type: string, nullable: true }
+        avatarUrl: { type: string, format: uri, nullable: true }
+        tasteTags:
+          type: array
+          items: { type: string }
+        bodyMeasurement:
+          $ref: '#/components/schemas/BodyMeasurement'
+    ProfileUpdate:
+      type: object
+      properties:
+        gender: { type: string, nullable: true }
+        avatarUrl: { type: string, format: uri, nullable: true }
+        tasteTags:
+          type: array
+          items: { type: string }
+        bodyMeasurement:
+          $ref: '#/components/schemas/BodyMeasurement'

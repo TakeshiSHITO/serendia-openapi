@@ -1,0 +1,29 @@
+components:
+  schemas:
+    FollowItem:
+      type: object
+      properties:
+        creatorId:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+        followedAt:
+          type: string
+          format: date-time
+          nullable: true
+    PageOfFollows:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FollowItem'
+        nextCursor:
+          type: string
+          nullable: true

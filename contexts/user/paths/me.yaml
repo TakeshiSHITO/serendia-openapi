@@ -2,7 +2,8 @@
   get:
     tags: [Profile]
     security: [{ bearerAuth: [] }]
-    summary: Get my profile
+    summary: 自分のプロフィールを取得
+    description: ログイン中のユーザーのプロフィール情報を取得します。身体測定値や設定などの個人情報が含まれます。
     responses:
       '200':
         description: OK
@@ -12,7 +13,8 @@
   patch:
     tags: [Profile]
     security: [{ bearerAuth: [] }]
-    summary: Update my profile (body measurements & preferences)
+    summary: プロフィールを更新
+    description: ログイン中のユーザーのプロフィール情報を更新します。身体測定値や好みの設定などを変更できます。
     requestBody:
       required: true
       content:

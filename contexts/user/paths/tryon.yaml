@@ -2,7 +2,8 @@
   post:
     tags: [TryOn]
     security: [{ bearerAuth: [] }]
-    summary: Create a try-on request
+    summary: バーチャル試着リクエストを作成
+    description: 指定した衣服アイテムのバーチャル試着処理をリクエストします。処理は非同期で行われ、リクエストIDが返されます。
     requestBody:
       required: true
       content:
@@ -19,7 +20,8 @@
   get:
     tags: [TryOn]
     security: [{ bearerAuth: [] }]
-    summary: Get try-on request status/result
+    summary: 試着リクエストのステータス・結果を取得
+    description: 指定したリクエストIDのバーチャル試着の処理状況や結果を取得します。処理完了後は試着画像のURLが含まれます。
     parameters:
       - in: path
         name: requestId
