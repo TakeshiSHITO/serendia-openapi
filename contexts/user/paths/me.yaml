@@ -6,7 +6,7 @@
     description: ログイン中のユーザーのプロフィール情報を取得します。身体測定値や設定などの個人情報が含まれます。
     responses:
       '200':
-        description: OK
+        description: Success
         content:
           application/json:
             schema: { $ref: ../schemas/profile.yaml#/components/schemas/Profile }
@@ -22,8 +22,4 @@
           schema: { $ref: ../schemas/profile.yaml#/components/schemas/ProfileUpdate }
     responses:
       '200': { description: Updated }
-      '422':
-        description: Validation error
-        content:
-          application/json:
-            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+      '422': { $ref: ../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }

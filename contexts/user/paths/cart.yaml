@@ -6,7 +6,7 @@
     description: ログイン中のユーザーのショッピングカートに入っているアイテムの一覧を取得します。
     responses:
       '200':
-        description: OK
+        description: Success
         content:
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
@@ -28,11 +28,7 @@
         content:
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
-      '422':
-        description: Rule violation
-        content:
-          application/json:
-            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+      '422': { $ref: ../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
 
 /cart/items/line:
   patch:
@@ -52,7 +48,7 @@
           schema: { $ref: ../schemas/cart.yaml#/components/schemas/UpdateCartItemRequest }
     responses:
       '200':
-        description: Updated cart
+        description: Success
         content:
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
@@ -67,4 +63,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { description: No Content }
+      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }

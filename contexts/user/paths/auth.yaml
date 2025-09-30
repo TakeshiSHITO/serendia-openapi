@@ -14,11 +14,7 @@
         content:
           application/json:
             schema: { $ref: ../schemas/auth.yaml#/components/schemas/TokensWithRole }
-      '409':
-        description: Email already in use
-        content:
-          application/json:
-            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+      '409': { $ref: ../../shared/responses/common.yaml#/components/responses/Conflict }
 
 /auth/login:
   post:
@@ -32,15 +28,11 @@
           schema: { $ref: ../schemas/auth.yaml#/components/schemas/LoginRequest }
     responses:
       '200':
-        description: OK
+        description: Success
         content:
           application/json:
             schema: { $ref: ../schemas/auth.yaml#/components/schemas/TokensWithRole }
-      '401':
-        description: Invalid credentials
-        content:
-          application/json:
-            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+      '401': { $ref: ../../shared/responses/common.yaml#/components/responses/Unauthorized }
 
 /auth/refresh:
   post:
@@ -54,15 +46,11 @@
           schema: { $ref: ../schemas/auth.yaml#/components/schemas/RefreshRequest }
     responses:
       '200':
-        description: OK
+        description: Success
         content:
           application/json:
             schema: { $ref: ../schemas/auth.yaml#/components/schemas/Tokens }
-      '401':
-        description: Invalid/expired refresh token
-        content:
-          application/json:
-            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+      '401': { $ref: ../../shared/responses/common.yaml#/components/responses/Unauthorized }
 
 /auth/logout:
   post:
@@ -79,4 +67,4 @@
             properties:
               refreshToken: { type: string }
     responses:
-      '204': { description: No Content }
+      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }

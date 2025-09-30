@@ -1,0 +1,32 @@
+components:
+  responses:
+    OK:
+      description: Success
+    Created:
+      description: Created
+    Accepted:
+      description: Accepted
+    Updated:
+      description: Updated
+    NoContent:
+      description: No Content
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+    UnprocessableEntity:
+      description: Validation error
+      content:
+        application/json:
+          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }

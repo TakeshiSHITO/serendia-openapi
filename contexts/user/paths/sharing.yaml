@@ -33,4 +33,4 @@
           Location:
             description: Target URL
             schema: { type: string, format: uri }
-      '404': { description: Not found / expired / revoked }
+      '404': { $ref: ../../shared/responses/common.yaml#/components/responses/NotFound }

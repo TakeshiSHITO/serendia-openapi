@@ -9,7 +9,7 @@
       - $ref: ../schemas/common.yaml#/components/parameters/Limit
     responses:
       '200':
-        description: OK
+        description: Success
         content:
           application/json:
             schema: { $ref: ../schemas/collections.yaml#/components/schemas/PageOfCollection }
@@ -26,12 +26,8 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '201': { description: Created }
-      '409':
-        description: Already saved
-        content:
-          application/json:
-            schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+      '201': { $ref: ../../shared/responses/common.yaml#/components/responses/Created }
+      '409': { $ref: ../../shared/responses/common.yaml#/components/responses/Conflict }
   delete:
     tags: [Collections]
     security: [{ bearerAuth: [] }]
@@ -43,4 +39,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { description: No Content }
+      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }

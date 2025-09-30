@@ -6,7 +6,7 @@
     description: ユーザーの写真などのアセットをクラウドストレージに直接アップロードするための署名付きURLを発行します。
     responses:
       '200':
-        description: OK
+        description: Success
         content:
           application/json:
             schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SignUrlResponse }
@@ -35,7 +35,7 @@
     description: ログイン中のユーザーが登録したすべてのアセット（写真など）の一覧を取得します。
     responses:
       '200':
-        description: OK
+        description: Success
         content:
           application/json:
             schema:
@@ -56,4 +56,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { description: No Content }
+      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }
