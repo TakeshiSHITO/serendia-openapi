@@ -1,0 +1,35 @@
+components:
+  schemas:
+    RenderStatus:
+      type: string
+      enum: [PENDING, PREVIEW, FINAL, FAILED]
+    RenderInfo:
+      type: object
+      properties:
+        status: { $ref: '#/components/schemas/RenderStatus' }
+        tier: { type: string, enum: [PREVIEW, FINAL], nullable: true }
+        imageUrl: { type: string, format: uri, nullable: true }
+        requestId: { type: string, format: uuid, nullable: true }
+    Frame:
+      type: object
+      properties:
+        position: { type: integer }
+        look: { $ref: './looks.yaml#/components/schemas/LookCard' }
+        render: { $ref: '#/components/schemas/RenderInfo' }
+    PageOfFrames:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Frame' }
+        nextCursor: { type: string, nullable: true }
+    SessionCreated:
+      type: object
+      properties:
+        sessionId: { type: string, format: uuid }
+    SwipeRequest:
+      type: object
+      required: [lookId, action]
+      properties:
+        lookId: { type: string, format: uuid }
+        action: { type: string, enum: [like, skip, superlike] }

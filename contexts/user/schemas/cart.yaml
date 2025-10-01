@@ -1,0 +1,25 @@
+components:
+  schemas:
+    CartLine:
+      type: object
+      properties:
+        lineId: { type: string, format: uuid }
+        variantId: { type: string, format: uuid }
+        quantity: { type: integer, minimum: 1 }
+    Cart:
+      type: object
+      properties:
+        lines:
+          type: array
+          items: { $ref: '#/components/schemas/CartLine' }
+    AddCartItemRequest:
+      type: object
+      required: [variantId, quantity]
+      properties:
+        variantId: { type: string, format: uuid }
+        quantity: { type: integer, minimum: 1 }
+    UpdateCartItemRequest:
+      type: object
+      required: [quantity]
+      properties:
+        quantity: { type: integer, minimum: 1, maximum: 1 }

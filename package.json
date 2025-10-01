@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^20.0.0",
@@ -6,6 +7,12 @@
     "husky": "^9.1.7"
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "preview": "redocly preview -p 8080",
+    "dev": "node scripts/dev-server.js",
+    "lint:all": "redocly lint contexts/admin/openapi.yaml && redocly lint contexts/shop/openapi.yaml && redocly lint contexts/user/openapi.yaml",
+    "validate": "redocly lint contexts/user/openapi.yaml",
+    "build": "redocly build-docs contexts/user/openapi.yaml",
+    "bundle": "redocly bundle contexts/user/openapi.yaml -o dist/openapi.bundled.yaml"
   }
 }

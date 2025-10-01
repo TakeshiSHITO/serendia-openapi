@@ -1,0 +1,14 @@
+components:
+  schemas:
+    CollectionItem:
+      type: object
+      properties:
+        look: { $ref: './looks.yaml#/components/schemas/LookCard' }
+        savedAt: { type: string, format: date-time }
+    PageOfCollection:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/CollectionItem' }
+        nextCursor: { type: string, nullable: true }

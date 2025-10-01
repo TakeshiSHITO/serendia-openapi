@@ -1,0 +1,44 @@
+# 画像生成(試着)リクエストの作成/進捗取得。非同期実行を前提。
+/tryon/requests:
+  post:
+    operationId: createTryOnRequest
+    tags: [TryOn]
+    security: [{ bearerAuth: [] }]
+    summary: バーチャル試着リクエストを作成
+    description: 指定した衣服アイテムのバーチャル試着処理をリクエストします。処理は非同期で行われ、リクエストIDが返されます。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnCreateRequest }
+    responses:
+      '202':
+        description: Accepted
+        content:
+          application/json:
+            schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+      '503': { $ref: ../../../shared/responses/common.yaml#/components/responses/ServiceUnavailable }
+
+/tryon/requests/{requestId}:
+  get:
+    operationId: getTryOnRequest
+    tags: [TryOn]
+    security: [{ bearerAuth: [] }]
+    summary: 試着リクエストのステータス・結果を取得
+    description: 指定したリクエストIDのバーチャル試着の処理状況や結果を取得します。処理完了後は試着画像のURLが含まれます。
+    parameters:
+      - in: path
+        name: requestId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

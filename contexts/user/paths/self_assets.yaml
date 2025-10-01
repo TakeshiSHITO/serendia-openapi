@@ -1,0 +1,75 @@
+# 本人写真の安全保管: 署名URL発行→直送アップロード→登録(同意付与)→一覧/削除。
+# 生成(試着)で参照される assetId を管理。削除で生成側キャッシュも失効。
+/sign/url:
+  post:
+    operationId: createSignedUrl
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: 直接アップロード用の署名付きURLを発行
+    description: ユーザーの写真などのアセットをクラウドストレージに直接アップロードするための署名付きURLを発行します。
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SignUrlResponse }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/assets/root:
+  post:
+    operationId: registerAsset
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: アップロードしたアセットを同意付きで登録
+    description: 署名付きURLでアップロードしたアセットをシステムに登録します。利用規約への同意情報も含めて保存されます。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/RegisterAssetRequest }
+    responses:
+      '201':
+        description: Created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+  get:
+    operationId: listAssets
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: 自分のアセット一覧を取得
+    description: ログイン中のユーザーが登録したすべてのアセット（写真など）の一覧を取得します。
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+/asset/item:
+  delete:
+    operationId: deleteAsset
+    tags: [SelfAssets]
+    security: [{ bearerAuth: [] }]
+    summary: アセットを削除
+    description: 指定したIDのアセットをシステムから削除します。削除されたアセットは復元できません。
+    parameters:
+      - in: path
+        name: assetId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

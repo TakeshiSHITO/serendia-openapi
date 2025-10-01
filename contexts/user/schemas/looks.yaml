@@ -1,0 +1,21 @@
+components:
+  schemas:
+    LookCard:
+      type: object
+      properties:
+        lookId: { type: string, format: uuid }
+        title: { type: string }
+        media:
+          type: array
+          items: { type: string, format: uri }
+        tags:
+          type: array
+          items: { type: string }
+        brand: { type: string, nullable: true }
+    PageOfLooks:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/LookCard' }
+        nextCursor: { type: string, nullable: true }

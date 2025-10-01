@@ -1,0 +1,53 @@
+# クリエイターのフォロー/解除と自分のフォロー一覧。
+/me/follows:
+  get:
+    operationId: listFollows
+    tags: [Follows]
+    security: [{ bearerAuth: [] }]
+    summary: フォロー中のクリエイター一覧を取得
+    description: ユーザーがフォローしているクリエイターの一覧をカーソルページネーションで取得します。
+    parameters:
+      - $ref: ../schemas/common.yaml#/components/parameters/Cursor
+      - $ref: ../schemas/common.yaml#/components/parameters/Limit
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/follows.yaml#/components/schemas/PageOfFollows
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/follows/{creatorId}:
+  post:
+    operationId: followCreator
+    tags: [Follows]
+    security: [{ bearerAuth: [] }]
+    summary: クリエイターをフォロー
+    description: 指定したクリエイターをフォローします。フォローすることでそのクリエイターの新着Lookを優先的に受け取れます。
+    parameters:
+      - in: path
+        name: creatorId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '201': { $ref: ../../../shared/responses/common.yaml#/components/responses/Created }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+  delete:
+    operationId: unfollowCreator
+    tags: [Follows]
+    security: [{ bearerAuth: [] }]
+    summary: クリエイターのフォローを解除
+    description: 指定したクリエイターのフォローを解除します。解除後はフォロー一覧から削除されます。
+    parameters:
+      - in: path
+        name: creatorId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

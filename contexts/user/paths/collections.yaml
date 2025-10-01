@@ -1,0 +1,52 @@
+# 気に入ったルックの保存/解除と一覧。カーソルページネーション対応。
+/me/collections:
+  get:
+    operationId: listCollections
+    tags: [Collections]
+    security: [{ bearerAuth: [] }]
+    summary: 保存したLookの一覧を取得
+    description: ユーザーがコレクションに保存したすべてのLookをカーソルページネーションで取得します。
+    parameters:
+      - $ref: ../schemas/common.yaml#/components/parameters/Cursor
+      - $ref: ../schemas/common.yaml#/components/parameters/Limit
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema: { $ref: ../schemas/collections.yaml#/components/schemas/PageOfCollection }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/collections/{lookId}:
+  post:
+    operationId: addToCollection
+    tags: [Collections]
+    security: [{ bearerAuth: [] }]
+    summary: Lookをコレクションに保存
+    description: 指定したLookをユーザーのコレクションに保存します。お気に入りとして後で見返すことができます。
+    parameters:
+      - in: path
+        name: lookId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '201': { $ref: ../../../shared/responses/common.yaml#/components/responses/Created }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+  delete:
+    operationId: removeFromCollection
+    tags: [Collections]
+    security: [{ bearerAuth: [] }]
+    summary: 保存したLookを削除
+    description: コレクションから指定したLookを削除します。削除後は一覧に表示されなくなります。
+    parameters:
+      - in: path
+        name: lookId
+        required: true
+        schema: { type: string, format: uuid }
+    responses:
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

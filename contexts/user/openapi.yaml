@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: FashionTinder User API
+  version: 1.0.0
+servers:
+  - url: https://api.serendia.com/v1
+tags:
+  - name: Auth
+    description: ユーザー認証関連のエンドポイント（サインアップ、ログイン、トークン更新、ログアウト）
+  - name: Me
+    description: ユーザープロフィール情報の取得と更新
+  - name: SelfAssets
+    description: ユーザーがアップロードした写真などのアセット管理
+  - name: TryOn
+    description: バーチャル試着リクエストの作成と取得
+  - name: Feed
+    description: スワイプ型のフィードセッション管理とイベントストリーミング
+  - name: Looks
+    description: ルック（コーディネート）の取得、検索、アウトバウンドクリックトラッキング
+  - name: Collections
+    description: ユーザーのコレクション（お気に入り）管理
+  - name: Follows
+    description: クリエイターのフォロー/アンフォロー機能
+  - name: Sharing
+    description: コンテンツの共有リンク作成と解決
+  - name: Cart
+    description: ショッピングカート管理（商品の追加、更新、削除）
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /auth/signup:
+    $ref: ./paths/auth.yaml#/~1auth~1signup
+  /auth/login:
+    $ref: ./paths/auth.yaml#/~1auth~1login
+  /auth/refresh:
+    $ref: ./paths/auth.yaml#/~1auth~1refresh
+  /auth/logout:
+    $ref: ./paths/auth.yaml#/~1auth~1logout
+
+  /me:
+    $ref: ./paths/me.yaml#/~1me
+
+  /me/self-assets/sign-url:
+    $ref: ./paths/self_assets.yaml#/~1sign~1url
+  /me/self-assets:
+    $ref: ./paths/self_assets.yaml#/~1assets~1root
+  /me/self-assets/{assetId}:
+    $ref: ./paths/self_assets.yaml#/~1asset~1item
+
+  /tryon/requests:
+    $ref: ./paths/tryon.yaml#/~1tryon~1requests
+  /tryon/requests/{requestId}:
+    $ref: ./paths/tryon.yaml#/~1tryon~1requests~1{requestId}
+
+  /canvas/sessions:
+    $ref: ./paths/feed.yaml#/~1canvas~1sessions
+  /canvas/sessions/{sessionId}/frames:
+    $ref: ./paths/feed.yaml#/~1canvas~1sessions~1{sessionId}~1frames
+  /canvas/sessions/{sessionId}/swipes:
+    $ref: ./paths/feed.yaml#/~1canvas~1sessions~1{sessionId}~1swipes
+  /canvas/sessions/{sessionId}/rewind:
+    $ref: ./paths/feed.yaml#/~1canvas~1sessions~1{sessionId}~1rewind
+  /canvas/sessions/{sessionId}/events:
+    $ref: ./paths/feed.yaml#/~1canvas~1sessions~1{sessionId}~1events
+
+  /looks/{lookId}:
+    $ref: ./paths/looks.yaml#/~1looks~1{lookId}
+  /search/looks:
+    $ref: ./paths/looks.yaml#/~1search~1looks
+  /looks/{lookId}/outbound-click:
+    $ref: ./paths/looks.yaml#/~1looks~1{lookId}~1outbound-click
+
+  /me/collections:
+    $ref: ./paths/collections.yaml#/~1me~1collections
+  /collections/{lookId}:
+    $ref: ./paths/collections.yaml#/~1collections~1{lookId}
+
+  /me/follows:
+    $ref: ./paths/follows.yaml#/~1me~1follows
+  /follows/{creatorId}:
+    $ref: ./paths/follows.yaml#/~1follows~1{creatorId}
+
+  /shares:
+    $ref: ./paths/sharing.yaml#/~1shares
+  /s/{shortCode}:
+    $ref: ./paths/sharing.yaml#/~1s~1{shortCode}
+
+  /me/cart:
+    $ref: ./paths/cart.yaml#/~1me~1cart
+  /me/cart/items:
+    $ref: ./paths/cart.yaml#/~1me~1cart~1items
+  /me/cart/items/{lineId}:
+    $ref: ./paths/cart.yaml#/~1me~1cart~1items~1{lineId}
