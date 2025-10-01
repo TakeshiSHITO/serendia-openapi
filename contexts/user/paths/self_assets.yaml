@@ -13,6 +13,7 @@
         content:
           application/json:
             schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SignUrlResponse }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
 /assets/root:
@@ -33,6 +34,8 @@
         content:
           application/json:
             schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
   get:
     operationId: listAssets
@@ -51,6 +54,7 @@
                 items:
                   type: array
                   items: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 /asset/item:
   delete:
@@ -66,4 +70,6 @@
         schema: { type: string, format: uuid }
     responses:
       '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

@@ -9,7 +9,7 @@ components:
       properties:
         email: { type: string, format: email }
         password: { type: string, minLength: 8 }
-        name: { type: string, maxLength: 80, nullable: true }
+        name: { type: string, minLength: 1, maxLength: 50 }
     LoginRequest:
       type: object
       required: [email, password]

@@ -7,7 +7,7 @@ servers:
 tags:
   - name: Auth
     description: ユーザー認証関連のエンドポイント（サインアップ、ログイン、トークン更新、ログアウト）
-  - name: Profile
+  - name: Me
     description: ユーザープロフィール情報の取得と更新
   - name: SelfAssets
     description: ユーザーがアップロードした写真などのアセット管理
@@ -43,7 +43,7 @@ paths:
     $ref: ./paths/auth.yaml#/~1auth~1logout
 
   /me:
-    $ref: ./paths/me.yaml#/~1me~1root
+    $ref: ./paths/me.yaml#/~1me
 
   /me/self-assets/sign-url:
     $ref: ./paths/self_assets.yaml#/~1sign~1url

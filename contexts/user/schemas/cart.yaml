@@ -22,4 +22,4 @@ components:
       type: object
       required: [quantity]
       properties:
-        quantity: { type: integer, minimum: 1 }
+        quantity: { type: integer, minimum: 1, maximum: 1 }

@@ -79,4 +79,5 @@
               refreshToken: { type: string }
     responses:
       '200': { $ref: ../../../shared/responses/common.yaml#/components/responses/OK }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

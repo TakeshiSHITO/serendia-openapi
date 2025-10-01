@@ -17,6 +17,8 @@
         content:
           application/json:
             schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
       '503': { $ref: ../../../shared/responses/common.yaml#/components/responses/ServiceUnavailable }
 

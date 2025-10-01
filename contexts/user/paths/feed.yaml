@@ -13,6 +13,7 @@
         content:
           application/json:
             schema: { $ref: ../schemas/feed.yaml#/components/schemas/SessionCreated }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
 /canvas/sessions/{sessionId}/frames:
@@ -37,6 +38,8 @@
         content:
           application/json:
             schema: { $ref: ../schemas/feed.yaml#/components/schemas/PageOfFrames }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
 /canvas/sessions/{sessionId}/swipes:
@@ -58,8 +61,8 @@
         application/json:
           schema: { $ref: ../schemas/feed.yaml#/components/schemas/SwipeRequest }
     responses:
-      '201': { description: Created }
-      '200': { description: Updated }
+      '201': { $ref: ../../../shared/responses/common.yaml#/components/responses/Created }
+      '200': { $ref: ../../../shared/responses/common.yaml#/components/responses/Updated }
       '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
@@ -76,7 +79,7 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '200': { description: OK }
+      '200': { $ref: ../../../shared/responses/common.yaml#/components/responses/OK }
       '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
@@ -100,5 +103,7 @@
             schema:
               type: string
               description: SSE event stream lines
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
       '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
       '503': { $ref: ../../../shared/responses/common.yaml#/components/responses/ServiceUnavailable }

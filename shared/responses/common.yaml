@@ -1,5 +1,6 @@
 components:
   responses:
+    # 200 - 一般的な成功レスポンス
     OK:
       description: Success
       content:
@@ -10,6 +11,7 @@ components:
               message:
                 type: string
                 example: Success
+    # 201 - リソースの作成が完了
     Created:
       description: 作成完了しました
       content:
@@ -20,6 +22,7 @@ components:
               message:
                 type: string
                 example: 作成完了しました
+    # 202 - リクエストが受理された（非同期処理など）
     Accepted:
       description: 受理されました
       content:
@@ -30,6 +33,7 @@ components:
               message:
                 type: string
                 example: 受理されました
+    # 200 - リソースの更新が完了
     Updated:
       description: 更新完了しました
       content:
@@ -40,8 +44,9 @@ components:
               message:
                 type: string
                 example: 更新完了しました
+    # 204 - 成功したがレスポンスボディがない
     NoContent:
-      description: 内容なし
+      description: 成功しました
       content:
         application/json:
           schema:
@@ -50,6 +55,7 @@ components:
               message:
                 type: string
                 example: 内容なし
+    # 401 - 認証が必要
     Unauthorized:
       description: 認証が必要です
       content:
@@ -60,6 +66,7 @@ components:
               message:
                 type: string
                 example: 認証が必要です
+    # 200 - ログアウト成功
     LogoutOK:
       description: Logged out successfully
       content:
@@ -70,6 +77,7 @@ components:
               message:
                 type: string
                 example: ログアウトに成功しました
+    # 404 - リソースが見つからない
     NotFound:
       description: リソースが見つかりません
       content:
@@ -80,6 +88,7 @@ components:
               message:
                 type: string
                 example: リソースが見つかりません
+    # 409 - リソースが既に存在する（重複エラー）
     Conflict:
       description: リソースが既に存在します
       content:
@@ -90,6 +99,7 @@ components:
               message:
                 type: string
                 example: リソースが既に存在します
+    # 422 - 入力データのバリデーションエラー
     UnprocessableEntity:
       description: 入力データが不正です
       content:
@@ -109,8 +119,9 @@ components:
                       type: string
                     message:
                       type: string
+    # 500 - サーバー内部エラー
     InternalServerError:
-      description: サーバー内部エラーが発生しました
+      description: サーバーエラーが発生しました
       content:
         application/json:
           schema:
@@ -118,7 +129,8 @@ components:
             properties:
               message:
                 type: string
-                example: サーバー内部エラーが発生しました
+                example: サーバーエラーが発生しました
+    # 502 - ゲートウェイエラー
     BadGateway:
       description: ゲートウェイエラーが発生しました
       content:
@@ -129,6 +141,7 @@ components:
               message:
                 type: string
                 example: ゲートウェイエラーが発生しました
+    # 503 - サービスが一時的に利用できない
     ServiceUnavailable:
       description: サービスが一時的に利用できません
       content:
@@ -139,3 +152,4 @@ components:
               message:
                 type: string
                 example: サービスが一時的に利用できません
+
