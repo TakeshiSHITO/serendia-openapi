@@ -1,5 +1,5 @@
 # カート取得/追加/数量変更/削除。購入導線がある場合に有効化。
-/cart/get:
+/me/cart:
   get:
     operationId: getCart
     tags: [Cart]
@@ -12,8 +12,9 @@
         content:
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/cart/items/post:
+/me/cart/items:
   post:
     operationId: addCartItem
     tags: [Cart]
@@ -32,8 +33,9 @@
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
       '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/cart/items/line:
+/me/cart/items/{lineId}:
   patch:
     operationId: updateCartItem
     tags: [Cart]
@@ -56,6 +58,7 @@
         content:
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
   delete:
     operationId: removeCartItem
     tags: [Cart]
@@ -69,3 +72,4 @@
         schema: { type: string, format: uuid }
     responses:
       '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

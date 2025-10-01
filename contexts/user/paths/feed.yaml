@@ -1,6 +1,6 @@
 # スワイプ体験: セッション開始→フレーム取得→スワイプ登録(冪等性)→巻き戻し→SSE通知。
 # フレームはレンダ状態(PREVIEW/FINAL/FAILED)とカード(look)を含む。
-/session/create:
+/canvas/sessions:
   post:
     operationId: createSession
     tags: [Feed]
@@ -13,8 +13,9 @@
         content:
           application/json:
             schema: { $ref: ../schemas/feed.yaml#/components/schemas/SessionCreated }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/frames/get:
+/canvas/sessions/{sessionId}/frames:
   get:
     operationId: getFrames
     tags: [Feed]
@@ -36,8 +37,9 @@
         content:
           application/json:
             schema: { $ref: ../schemas/feed.yaml#/components/schemas/PageOfFrames }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/swipes/post:
+/canvas/sessions/{sessionId}/swipes:
   post:
     operationId: recordSwipe
     tags: [Feed]
@@ -59,8 +61,9 @@
       '201': { description: Created }
       '200': { description: Updated }
       '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/rewind/post:
+/canvas/sessions/{sessionId}/rewind:
   post:
     operationId: rewindSwipe
     tags: [Feed]
@@ -75,8 +78,9 @@
     responses:
       '200': { description: OK }
       '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/events/stream:
+/canvas/sessions/{sessionId}/events:
   get:
     operationId: streamEvents
     tags: [Feed]
@@ -96,3 +100,5 @@
             schema:
               type: string
               description: SSE event stream lines
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+      '503': { $ref: ../../../shared/responses/common.yaml#/components/responses/ServiceUnavailable }

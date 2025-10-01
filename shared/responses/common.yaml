@@ -2,31 +2,140 @@ components:
   responses:
     OK:
       description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Success
     Created:
-      description: Created
+      description: 作成完了しました
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 作成完了しました
     Accepted:
-      description: Accepted
+      description: 受理されました
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 受理されました
     Updated:
-      description: Updated
+      description: 更新完了しました
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 更新完了しました
     NoContent:
-      description: No Content
+      description: 内容なし
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 内容なし
     Unauthorized:
-      description: Unauthorized
+      description: 認証が必要です
       content:
         application/json:
-          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 認証が必要です
+    LogoutOK:
+      description: Logged out successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: ログアウトに成功しました
     NotFound:
-      description: Not found
+      description: リソースが見つかりません
       content:
         application/json:
-          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: リソースが見つかりません
     Conflict:
-      description: Conflict
+      description: リソースが既に存在します
       content:
         application/json:
-          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: リソースが既に存在します
     UnprocessableEntity:
-      description: Validation error
+      description: 入力データが不正です
       content:
         application/json:
-          schema: { $ref: ../schemas/common.yaml#/components/schemas/Error }
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 入力データが不正です
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                    message:
+                      type: string
+    InternalServerError:
+      description: サーバー内部エラーが発生しました
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: サーバー内部エラーが発生しました
+    BadGateway:
+      description: ゲートウェイエラーが発生しました
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: ゲートウェイエラーが発生しました
+    ServiceUnavailable:
+      description: サービスが一時的に利用できません
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: サービスが一時的に利用できません

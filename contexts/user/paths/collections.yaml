@@ -1,5 +1,5 @@
 # 気に入ったルックの保存/解除と一覧。カーソルページネーション対応。
-/collections/list:
+/me/collections:
   get:
     operationId: listCollections
     tags: [Collections]
@@ -15,8 +15,9 @@
         content:
           application/json:
             schema: { $ref: ../schemas/collections.yaml#/components/schemas/PageOfCollection }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/collections/item:
+/collections/{lookId}:
   post:
     operationId: addToCollection
     tags: [Collections]
@@ -31,6 +32,7 @@
     responses:
       '201': { $ref: ../../../shared/responses/common.yaml#/components/responses/Created }
       '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
   delete:
     operationId: removeFromCollection
     tags: [Collections]
@@ -44,3 +46,4 @@
         schema: { type: string, format: uuid }
     responses:
       '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

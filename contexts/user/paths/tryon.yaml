@@ -1,5 +1,5 @@
 # 画像生成(試着)リクエストの作成/進捗取得。非同期実行を前提。
-/tryon/create:
+/tryon/requests:
   post:
     operationId: createTryOnRequest
     tags: [TryOn]
@@ -17,8 +17,10 @@
         content:
           application/json:
             schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+      '503': { $ref: ../../../shared/responses/common.yaml#/components/responses/ServiceUnavailable }
 
-/tryon/get:
+/tryon/requests/{requestId}:
   get:
     operationId: getTryOnRequest
     tags: [TryOn]
@@ -37,3 +39,4 @@
           application/json:
             schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
       '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

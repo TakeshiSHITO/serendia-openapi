@@ -1,5 +1,5 @@
 # クリエイターのフォロー/解除と自分のフォロー一覧。
-/follows/list:
+/me/follows:
   get:
     operationId: listFollows
     tags: [Follows]
@@ -16,8 +16,9 @@
           application/json:
             schema:
               $ref: ../schemas/follows.yaml#/components/schemas/PageOfFollows
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
 
-/follows/item:
+/follows/{creatorId}:
   post:
     operationId: followCreator
     tags: [Follows]
@@ -32,6 +33,7 @@
     responses:
       '201': { $ref: ../../../shared/responses/common.yaml#/components/responses/Created }
       '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
   delete:
     operationId: unfollowCreator
     tags: [Follows]
@@ -45,3 +47,4 @@
         schema: { type: string, format: uuid }
     responses:
       '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

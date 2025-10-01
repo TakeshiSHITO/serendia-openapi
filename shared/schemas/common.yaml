@@ -7,10 +7,49 @@ components:
       properties:
         message:
           type: string
-          description: ����û��
+          description: エラーメッセージ
         code:
           type: string
-          description: ������
+          description: エラーコード
         details:
           type: object
-          description: ��n���s0�1
+          description: 詳細情報（オプション）
+
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            details:
+              type: object
+              properties:
+                fields:
+                  type: array
+                  description: バリデーションエラーが発生したフィールドのリスト
+                  items:
+                    type: object
+                    required:
+                      - field
+                      - message
+                    properties:
+                      field:
+                        type: string
+                        description: エラーが発生したフィールド名
+                      message:
+                        type: string
+                        description: フィールド固有のエラーメッセージ
+
+    ConflictError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            details:
+              type: object
+              properties:
+                conflictingField:
+                  type: string
+                  description: 競合が発生したフィールド名
+                conflictingValue:
+                  type: string
+                  description: 競合した値

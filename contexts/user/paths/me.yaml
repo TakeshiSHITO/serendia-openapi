@@ -12,6 +12,8 @@
         content:
           application/json:
             schema: { $ref: ../schemas/profile.yaml#/components/schemas/Profile }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
   patch:
     operationId: updateMyProfile
     tags: [Profile]
@@ -26,3 +28,4 @@
     responses:
       '200': { description: Updated }
       '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
