@@ -1,7 +1,9 @@
 # ルックの公開情報取得と検索、外部購入リンクのクリック計測。
 /looks/get:
   get:
+    operationId: getLook
     tags: [Looks]
+    security: []
     summary: Lookの詳細を取得
     description: 指定したIDのLookの詳細情報を取得します。コーディネートの画像や商品情報が含まれます。
     parameters:
@@ -15,11 +17,13 @@
         content:
           application/json:
             schema: { $ref: ../schemas/looks.yaml#/components/schemas/LookCard }
-      '404': { $ref: ../../shared/responses/common.yaml#/components/responses/NotFound }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
 
 /search/looks:
   get:
+    operationId: searchLooks
     tags: [Looks]
+    security: []
     summary: Lookを検索
     description: キーワード、タグ、ブランド、価格帯などの条件でLookを検索します。カーソルページネーションに対応しています。
     parameters:
@@ -49,6 +53,7 @@
 
 /outbound/click:
   post:
+    operationId: trackOutboundClick
     tags: [Looks]
     security: [{ bearerAuth: [] }]
     summary: 外部購入リンクのクリックを記録
@@ -59,4 +64,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }

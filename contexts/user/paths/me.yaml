@@ -1,6 +1,7 @@
 #自分のプロフィール取得/更新（身体寸法・嗜好タグなど）。
 /me/root:
   get:
+    operationId: getMyProfile
     tags: [Profile]
     security: [{ bearerAuth: [] }]
     summary: 自分のプロフィールを取得
@@ -12,6 +13,7 @@
           application/json:
             schema: { $ref: ../schemas/profile.yaml#/components/schemas/Profile }
   patch:
+    operationId: updateMyProfile
     tags: [Profile]
     security: [{ bearerAuth: [] }]
     summary: プロフィールを更新
@@ -23,4 +25,4 @@
           schema: { $ref: ../schemas/profile.yaml#/components/schemas/ProfileUpdate }
     responses:
       '200': { description: Updated }
-      '422': { $ref: ../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }

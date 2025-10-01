@@ -1,6 +1,7 @@
 # 共有用の短縮リンク発行と解決(302)。可視性(unlisted/public)や期限の指定に対応。
-/shares/post:
+/shares:
   post:
+    operationId: createShareLink
     tags: [Sharing]
     security: [{ bearerAuth: [] }]
     summary: 共有可能なリンクを作成
@@ -16,10 +17,13 @@
         content:
           application/json:
             schema: { $ref: ../schemas/sharing.yaml#/components/schemas/Share }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
 
-/share/resolve:
+/s/{shortCode}:
   get:
+    operationId: resolveShareLink
     tags: [Sharing]
+    security: []
     summary: 共有リンクを解決してリダイレクト
     description: 短縮コードから元のコンテンツURLを解決し、クリックを記録した上でアプリまたはWebページへリダイレクトします。
     parameters:
@@ -28,10 +32,20 @@
         required: true
         schema: { type: string }
     responses:
+      '200':
+        description: Success - resolved share link information
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
       '302':
         description: Redirects to deep link or web landing
         headers:
           Location:
             description: Target URL
             schema: { type: string, format: uri }
-      '404': { $ref: ../../shared/responses/common.yaml#/components/responses/NotFound }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }

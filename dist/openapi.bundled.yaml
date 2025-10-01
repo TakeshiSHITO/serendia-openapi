@@ -1,0 +1,1251 @@
+openapi: 3.0.3
+info:
+  title: FashionTinder User API
+  version: 1.0.0
+servers:
+  - url: https://api.serendia.com/v1
+tags:
+  - name: Auth
+    description: ユーザー認証関連のエンドポイント（サインアップ、ログイン、トークン更新、ログアウト）
+  - name: Profile
+    description: ユーザープロフィール情報の取得と更新
+  - name: SelfAssets
+    description: ユーザーがアップロードした写真などのアセット管理
+  - name: TryOn
+    description: バーチャル試着リクエストの作成と取得
+  - name: Feed
+    description: スワイプ型のフィードセッション管理とイベントストリーミング
+  - name: Looks
+    description: ルック（コーディネート）の取得、検索、アウトバウンドクリックトラッキング
+  - name: Collections
+    description: ユーザーのコレクション（お気に入り）管理
+  - name: Follows
+    description: クリエイターのフォロー/アンフォロー機能
+  - name: Sharing
+    description: コンテンツの共有リンク作成と解決
+  - name: Cart
+    description: ショッピングカート管理（商品の追加、更新、削除）
+paths:
+  /auth/signup:
+    post:
+      operationId: signup
+      tags:
+        - Auth
+      security: []
+      summary: メールアドレスとパスワードで新規登録
+      description: 新規ユーザーアカウントを作成します。メールアドレスとパスワードを受け取り、アクセストークンとリフレッシュトークンを返します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '201':
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokensWithRole'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /auth/login:
+    post:
+      operationId: login
+      tags:
+        - Auth
+      security: []
+      summary: メールアドレスとパスワードでログイン
+      description: 既存のユーザーアカウントでログインします。認証情報を受け取り、アクセストークンとリフレッシュトークンを返します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokensWithRole'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /auth/refresh:
+    post:
+      operationId: refreshToken
+      tags:
+        - Auth
+      security: []
+      summary: アクセストークンを更新
+      description: リフレッシュトークンを使用して新しいアクセストークンを発行します。アクセストークンの有効期限が切れた際に使用します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tokens'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /auth/logout:
+    post:
+      operationId: logout
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      summary: ログアウトしてリフレッシュトークンを無効化
+      description: ユーザーをログアウトし、指定されたリフレッシュトークンを無効化します。これにより、そのトークンを使用した新しいアクセストークンの発行ができなくなります。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+  /me:
+    get:
+      operationId: getMyProfile
+      tags:
+        - Profile
+      security:
+        - bearerAuth: []
+      summary: 自分のプロフィールを取得
+      description: ログイン中のユーザーのプロフィール情報を取得します。身体測定値や設定などの個人情報が含まれます。
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+    patch:
+      operationId: updateMyProfile
+      tags:
+        - Profile
+      security:
+        - bearerAuth: []
+      summary: プロフィールを更新
+      description: ログイン中のユーザーのプロフィール情報を更新します。身体測定値や好みの設定などを変更できます。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      responses:
+        '200':
+          description: Updated
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /me/self-assets/sign-url:
+    post:
+      operationId: createSignedUrl
+      tags:
+        - SelfAssets
+      security:
+        - bearerAuth: []
+      summary: 直接アップロード用の署名付きURLを発行
+      description: ユーザーの写真などのアセットをクラウドストレージに直接アップロードするための署名付きURLを発行します。
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUrlResponse'
+  /me/self-assets:
+    post:
+      operationId: registerAsset
+      tags:
+        - SelfAssets
+      security:
+        - bearerAuth: []
+      summary: アップロードしたアセットを同意付きで登録
+      description: 署名付きURLでアップロードしたアセットをシステムに登録します。利用規約への同意情報も含めて保存されます。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterAssetRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfAsset'
+    get:
+      operationId: listAssets
+      tags:
+        - SelfAssets
+      security:
+        - bearerAuth: []
+      summary: 自分のアセット一覧を取得
+      description: ログイン中のユーザーが登録したすべてのアセット（写真など）の一覧を取得します。
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SelfAsset'
+  /me/self-assets/{assetId}:
+    delete:
+      operationId: deleteAsset
+      tags:
+        - SelfAssets
+      security:
+        - bearerAuth: []
+      summary: アセットを削除
+      description: 指定したIDのアセットをシステムから削除します。削除されたアセットは復元できません。
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+  /tryon/requests:
+    post:
+      operationId: createTryOnRequest
+      tags:
+        - TryOn
+      security:
+        - bearerAuth: []
+      summary: バーチャル試着リクエストを作成
+      description: 指定した衣服アイテムのバーチャル試着処理をリクエストします。処理は非同期で行われ、リクエストIDが返されます。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TryOnCreateRequest'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TryOnRequest'
+  /tryon/requests/{requestId}:
+    get:
+      operationId: getTryOnRequest
+      tags:
+        - TryOn
+      security:
+        - bearerAuth: []
+      summary: 試着リクエストのステータス・結果を取得
+      description: 指定したリクエストIDのバーチャル試着の処理状況や結果を取得します。処理完了後は試着画像のURLが含まれます。
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TryOnRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /canvas/sessions:
+    post:
+      operationId: createSession
+      tags:
+        - Feed
+      security:
+        - bearerAuth: []
+      summary: スワイプセッションを開始
+      description: 新しいスワイプセッションを開始します。決定的なシーケンスでLookが表示されます。
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionCreated'
+  /canvas/sessions/{sessionId}/frames:
+    get:
+      operationId: getFrames
+      tags:
+        - Feed
+      security:
+        - bearerAuth: []
+      summary: カーソル位置周辺のフレームを取得
+      description: 指定したカーソル位置の前後のフレーム（Look）を取得します。スワイプUIで表示するコンテンツを読み込みます。
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Cursor'
+        - in: query
+          name: window
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            default: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfFrames'
+  /canvas/sessions/{sessionId}/swipes:
+    post:
+      operationId: recordSwipe
+      tags:
+        - Feed
+      security:
+        - bearerAuth: []
+      summary: スワイプアクションを記録
+      description: ユーザーのスワイプ操作（いいね/スキップ/スーパーいいね）を記録します。べき等性キーで重複防止されます。
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwipeRequest'
+      responses:
+        '200':
+          description: Updated
+        '201':
+          description: Created
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /canvas/sessions/{sessionId}/rewind:
+    post:
+      operationId: rewindSwipe
+      tags:
+        - Feed
+      security:
+        - bearerAuth: []
+      summary: 最後のスワイプを巻き戻す
+      description: 直前のスワイプアクションを取り消します。1回のみ実行可能です。
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /canvas/sessions/{sessionId}/events:
+    get:
+      operationId: streamEvents
+      tags:
+        - Feed
+      security:
+        - bearerAuth: []
+      summary: フレーム更新のためのServer-Sent Eventsストリーム
+      description: フレームのアップグレード情報をリアルタイムで受信するためのSSEストリームを開始します。
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: text/event-stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: SSE event stream lines
+  /looks/{lookId}:
+    get:
+      operationId: getLook
+      tags:
+        - Looks
+      security: []
+      summary: Lookの詳細を取得
+      description: 指定したIDのLookの詳細情報を取得します。コーディネートの画像や商品情報が含まれます。
+      parameters:
+        - in: path
+          name: lookId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LookCard'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /search/looks:
+    get:
+      operationId: searchLooks
+      tags:
+        - Looks
+      security: []
+      summary: Lookを検索
+      description: キーワード、タグ、ブランド、価格帯などの条件でLookを検索します。カーソルページネーションに対応しています。
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+        - in: query
+          name: tags
+          schema:
+            type: string
+            description: Comma-separated tags
+        - in: query
+          name: brand
+          schema:
+            type: string
+        - in: query
+          name: priceMin
+          schema:
+            type: number
+        - in: query
+          name: priceMax
+          schema:
+            type: number
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfLooks'
+  /looks/{lookId}/outbound-click:
+    post:
+      operationId: trackOutboundClick
+      tags:
+        - Looks
+      security:
+        - bearerAuth: []
+      summary: 外部購入リンクのクリックを記録
+      description: ユーザーが商品購入のために外部サイトへ遷移したことを記録します。アフィリエイトトラッキングに使用されます。
+      parameters:
+        - in: path
+          name: lookId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+  /me/collections:
+    get:
+      operationId: listCollections
+      tags:
+        - Collections
+      security:
+        - bearerAuth: []
+      summary: 保存したLookの一覧を取得
+      description: ユーザーがコレクションに保存したすべてのLookをカーソルページネーションで取得します。
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfCollection'
+  /collections/{lookId}:
+    post:
+      operationId: addToCollection
+      tags:
+        - Collections
+      security:
+        - bearerAuth: []
+      summary: Lookをコレクションに保存
+      description: 指定したLookをユーザーのコレクションに保存します。お気に入りとして後で見返すことができます。
+      parameters:
+        - in: path
+          name: lookId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      operationId: removeFromCollection
+      tags:
+        - Collections
+      security:
+        - bearerAuth: []
+      summary: 保存したLookを削除
+      description: コレクションから指定したLookを削除します。削除後は一覧に表示されなくなります。
+      parameters:
+        - in: path
+          name: lookId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+  /me/follows:
+    get:
+      operationId: listFollows
+      tags:
+        - Follows
+      security:
+        - bearerAuth: []
+      summary: フォロー中のクリエイター一覧を取得
+      description: ユーザーがフォローしているクリエイターの一覧をカーソルページネーションで取得します。
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfFollows'
+  /follows/{creatorId}:
+    post:
+      operationId: followCreator
+      tags:
+        - Follows
+      security:
+        - bearerAuth: []
+      summary: クリエイターをフォロー
+      description: 指定したクリエイターをフォローします。フォローすることでそのクリエイターの新着Lookを優先的に受け取れます。
+      parameters:
+        - in: path
+          name: creatorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      operationId: unfollowCreator
+      tags:
+        - Follows
+      security:
+        - bearerAuth: []
+      summary: クリエイターのフォローを解除
+      description: 指定したクリエイターのフォローを解除します。解除後はフォロー一覧から削除されます。
+      parameters:
+        - in: path
+          name: creatorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+  /shares:
+    post:
+      operationId: createShareLink
+      tags:
+        - Sharing
+      security:
+        - bearerAuth: []
+      summary: 共有可能なリンクを作成
+      description: LookやコレクションなどのコンテンツをSNSやメッセージで共有するための短縮リンクを生成します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShareCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Share'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /s/{shortCode}:
+    get:
+      operationId: resolveShareLink
+      tags:
+        - Sharing
+      security: []
+      summary: 共有リンクを解決してリダイレクト
+      description: 短縮コードから元のコンテンツURLを解決し、クリックを記録した上でアプリまたはWebページへリダイレクトします。
+      parameters:
+        - in: path
+          name: shortCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success - resolved share link information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+        '302':
+          description: Redirects to deep link or web landing
+          headers:
+            Location:
+              description: Target URL
+              schema:
+                type: string
+                format: uri
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/cart:
+    get:
+      operationId: getCart
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: カートの内容を取得
+      description: ログイン中のユーザーのショッピングカートに入っているアイテムの一覧を取得します。
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+  /me/cart/items:
+    post:
+      operationId: addCartItem
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: カートにアイテムを追加
+      description: 指定したアイテムをショッピングカートに追加します。更新されたカートの内容が返されます。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCartItemRequest'
+      responses:
+        '200':
+          description: Updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /me/cart/items/{lineId}:
+    patch:
+      operationId: updateCartItem
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: カート内アイテムの数量を更新
+      description: カート内の指定したアイテムの数量を変更します。更新されたカートの内容が返されます。
+      parameters:
+        - in: path
+          name: lineId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartItemRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+    delete:
+      operationId: removeCartItem
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: カートからアイテムを削除
+      description: カートから指定したアイテムを削除します。削除後はカートに表示されなくなります。
+      parameters:
+        - in: path
+          name: lineId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    SignupRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        name:
+          type: string
+          maxLength: 80
+          nullable: true
+    Tokens:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - accessToken
+    Role:
+      type: string
+      enum:
+        - USER
+    TokensWithRole:
+      allOf:
+        - $ref: '#/components/schemas/Tokens'
+        - type: object
+          properties:
+            role:
+              $ref: '#/components/schemas/Role'
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: ����û��
+        code:
+          type: string
+          description: ������
+        details:
+          type: object
+          description: ��n���s0�1
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    RefreshRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+    BodyMeasurement:
+      type: object
+      properties:
+        heightCm:
+          type: number
+        chestCm:
+          type: number
+        waistCm:
+          type: number
+        hipCm:
+          type: number
+        footMm:
+          type: number
+          nullable: true
+    Profile:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        gender:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+        tasteTags:
+          type: array
+          items:
+            type: string
+        bodyMeasurement:
+          $ref: '#/components/schemas/BodyMeasurement'
+    ProfileUpdate:
+      type: object
+      properties:
+        gender:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+        tasteTags:
+          type: array
+          items:
+            type: string
+        bodyMeasurement:
+          $ref: '#/components/schemas/BodyMeasurement'
+    SignUrlResponse:
+      type: object
+      properties:
+        uploadUrl:
+          type: string
+          format: uri
+        publicUrl:
+          type: string
+          format: uri
+          nullable: true
+    RetentionPolicy:
+      type: string
+      enum:
+        - SESSION_ONLY
+        - DAYS_30
+        - DAYS_365
+    SelfAsset:
+      type: object
+      properties:
+        assetId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        retention:
+          $ref: '#/components/schemas/RetentionPolicy'
+    Consent:
+      type: object
+      properties:
+        scope:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+    RegisterAssetRequest:
+      type: object
+      required:
+        - retention
+        - purpose
+      properties:
+        publicUrl:
+          type: string
+          format: uri
+          nullable: true
+        storageKey:
+          type: string
+          nullable: true
+        purpose:
+          type: string
+          enum:
+            - tryon
+        retention:
+          $ref: '#/components/schemas/RetentionPolicy'
+        consent:
+          $ref: '#/components/schemas/Consent'
+    RenderTier:
+      type: string
+      enum:
+        - PREVIEW
+        - FINAL
+    TryOnCreateRequest:
+      type: object
+      required:
+        - assetId
+        - variantId
+        - tier
+      properties:
+        assetId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        tier:
+          $ref: '#/components/schemas/RenderTier'
+    TryOnStatus:
+      type: string
+      enum:
+        - PENDING
+        - SUCCEEDED
+        - FAILED
+    TryOnRequest:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/TryOnStatus'
+        tier:
+          $ref: '#/components/schemas/RenderTier'
+        imageUrl:
+          type: string
+          format: uri
+          nullable: true
+    SessionCreated:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+    LookCard:
+      type: object
+      properties:
+        lookId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        media:
+          type: array
+          items:
+            type: string
+            format: uri
+        tags:
+          type: array
+          items:
+            type: string
+        brand:
+          type: string
+          nullable: true
+    RenderStatus:
+      type: string
+      enum:
+        - PENDING
+        - PREVIEW
+        - FINAL
+        - FAILED
+    RenderInfo:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/RenderStatus'
+        tier:
+          type: string
+          enum:
+            - PREVIEW
+            - FINAL
+          nullable: true
+        imageUrl:
+          type: string
+          format: uri
+          nullable: true
+        requestId:
+          type: string
+          format: uuid
+          nullable: true
+    Frame:
+      type: object
+      properties:
+        position:
+          type: integer
+        look:
+          $ref: '#/components/schemas/LookCard'
+        render:
+          $ref: '#/components/schemas/RenderInfo'
+    PageOfFrames:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Frame'
+        nextCursor:
+          type: string
+          nullable: true
+    SwipeRequest:
+      type: object
+      required:
+        - lookId
+        - action
+      properties:
+        lookId:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum:
+            - like
+            - skip
+            - superlike
+    PageOfLooks:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LookCard'
+        nextCursor:
+          type: string
+          nullable: true
+    CollectionItem:
+      type: object
+      properties:
+        look:
+          $ref: '#/components/schemas/LookCard'
+        savedAt:
+          type: string
+          format: date-time
+    PageOfCollection:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionItem'
+        nextCursor:
+          type: string
+          nullable: true
+    FollowItem:
+      type: object
+      properties:
+        creatorId:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+        followedAt:
+          type: string
+          format: date-time
+          nullable: true
+    PageOfFollows:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FollowItem'
+        nextCursor:
+          type: string
+          nullable: true
+    ShareCreateRequest:
+      type: object
+      required:
+        - resourceType
+        - resourceId
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - look
+            - collection
+            - creator
+        resourceId:
+          type: string
+          format: uuid
+        visibility:
+          type: string
+          enum:
+            - public
+            - unlisted
+          default: unlisted
+        expiresInHours:
+          type: integer
+          minimum: 1
+          maximum: 720
+          nullable: true
+    Share:
+      type: object
+      properties:
+        shareId:
+          type: string
+          format: uuid
+        url:
+          type: string
+          format: uri
+        resourceType:
+          type: string
+          enum:
+            - look
+            - collection
+            - creator
+        resourceId:
+          type: string
+          format: uuid
+        visibility:
+          type: string
+          enum:
+            - public
+            - unlisted
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    CartLine:
+      type: object
+      properties:
+        lineId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+    Cart:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartLine'
+    AddCartItemRequest:
+      type: object
+      required:
+        - variantId
+        - quantity
+      properties:
+        variantId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+    UpdateCartItemRequest:
+      type: object
+      required:
+        - quantity
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+  responses:
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NoContent:
+      description: No Content
+    UnprocessableEntity:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Created:
+      description: Created
+  parameters:
+    Cursor:
+      in: query
+      name: cursor
+      schema:
+        type: string
+        nullable: true
+    IdempotencyKey:
+      in: header
+      name: Idempotency-Key
+      required: true
+      schema:
+        type: string
+    Limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20

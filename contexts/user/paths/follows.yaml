@@ -1,6 +1,7 @@
 # クリエイターのフォロー/解除と自分のフォロー一覧。
 /follows/list:
   get:
+    operationId: listFollows
     tags: [Follows]
     security: [{ bearerAuth: [] }]
     summary: フォロー中のクリエイター一覧を取得
@@ -18,6 +19,7 @@
 
 /follows/item:
   post:
+    operationId: followCreator
     tags: [Follows]
     security: [{ bearerAuth: [] }]
     summary: クリエイターをフォロー
@@ -28,9 +30,10 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '201': { $ref: ../../shared/responses/common.yaml#/components/responses/Created }
-      '409': { $ref: ../../shared/responses/common.yaml#/components/responses/Conflict }
+      '201': { $ref: ../../../shared/responses/common.yaml#/components/responses/Created }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
   delete:
+    operationId: unfollowCreator
     tags: [Follows]
     security: [{ bearerAuth: [] }]
     summary: クリエイターのフォローを解除
@@ -41,4 +44,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }

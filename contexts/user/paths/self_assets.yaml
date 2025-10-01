@@ -2,6 +2,7 @@
 # 生成(試着)で参照される assetId を管理。削除で生成側キャッシュも失効。
 /sign/url:
   post:
+    operationId: createSignedUrl
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
     summary: 直接アップロード用の署名付きURLを発行
@@ -15,6 +16,7 @@
 
 /assets/root:
   post:
+    operationId: registerAsset
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
     summary: アップロードしたアセットを同意付きで登録
@@ -31,6 +33,7 @@
           application/json:
             schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
   get:
+    operationId: listAssets
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
     summary: 自分のアセット一覧を取得
@@ -48,6 +51,7 @@
                   items: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
 /asset/item:
   delete:
+    operationId: deleteAsset
     tags: [SelfAssets]
     security: [{ bearerAuth: [] }]
     summary: アセットを削除
@@ -58,4 +62,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }

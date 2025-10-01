@@ -14,7 +14,7 @@ components:
       type: object
       properties:
         position: { type: integer }
-        look: { $ref: '../looks.yaml#/components/schemas/LookCard' }
+        look: { $ref: './looks.yaml#/components/schemas/LookCard' }
         render: { $ref: '#/components/schemas/RenderInfo' }
     PageOfFrames:
       type: object

@@ -2,6 +2,7 @@
 # フレームはレンダ状態(PREVIEW/FINAL/FAILED)とカード(look)を含む。
 /session/create:
   post:
+    operationId: createSession
     tags: [Feed]
     security: [{ bearerAuth: [] }]
     summary: スワイプセッションを開始
@@ -15,6 +16,7 @@
 
 /frames/get:
   get:
+    operationId: getFrames
     tags: [Feed]
     security: [{ bearerAuth: [] }]
     summary: カーソル位置周辺のフレームを取得
@@ -37,6 +39,7 @@
 
 /swipes/post:
   post:
+    operationId: recordSwipe
     tags: [Feed]
     security: [{ bearerAuth: [] }]
     summary: スワイプアクションを記録
@@ -55,10 +58,11 @@
     responses:
       '201': { description: Created }
       '200': { description: Updated }
-      '422': { $ref: ../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
 
 /rewind/post:
   post:
+    operationId: rewindSwipe
     tags: [Feed]
     security: [{ bearerAuth: [] }]
     summary: 最後のスワイプを巻き戻す
@@ -70,10 +74,11 @@
         schema: { type: string, format: uuid }
     responses:
       '200': { description: OK }
-      '409': { $ref: ../../shared/responses/common.yaml#/components/responses/Conflict }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
 
 /events/stream:
   get:
+    operationId: streamEvents
     tags: [Feed]
     security: [{ bearerAuth: [] }]
     summary: フレーム更新のためのServer-Sent Eventsストリーム

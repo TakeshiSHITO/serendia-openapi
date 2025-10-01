@@ -1,6 +1,7 @@
 # 画像生成(試着)リクエストの作成/進捗取得。非同期実行を前提。
 /tryon/create:
   post:
+    operationId: createTryOnRequest
     tags: [TryOn]
     security: [{ bearerAuth: [] }]
     summary: バーチャル試着リクエストを作成
@@ -19,6 +20,7 @@
 
 /tryon/get:
   get:
+    operationId: getTryOnRequest
     tags: [TryOn]
     security: [{ bearerAuth: [] }]
     summary: 試着リクエストのステータス・結果を取得
@@ -34,4 +36,4 @@
         content:
           application/json:
             schema: { $ref: ../schemas/tryon.yaml#/components/schemas/TryOnRequest }
-      '404': { $ref: ../../shared/responses/common.yaml#/components/responses/NotFound }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }

@@ -1,6 +1,7 @@
 # カート取得/追加/数量変更/削除。購入導線がある場合に有効化。
 /cart/get:
   get:
+    operationId: getCart
     tags: [Cart]
     security: [{ bearerAuth: [] }]
     summary: カートの内容を取得
@@ -14,6 +15,7 @@
 
 /cart/items/post:
   post:
+    operationId: addCartItem
     tags: [Cart]
     security: [{ bearerAuth: [] }]
     summary: カートにアイテムを追加
@@ -29,10 +31,11 @@
         content:
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
-      '422': { $ref: ../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
 
 /cart/items/line:
   patch:
+    operationId: updateCartItem
     tags: [Cart]
     security: [{ bearerAuth: [] }]
     summary: カート内アイテムの数量を更新
@@ -54,6 +57,7 @@
           application/json:
             schema: { $ref: ../schemas/cart.yaml#/components/schemas/Cart }
   delete:
+    operationId: removeCartItem
     tags: [Cart]
     security: [{ bearerAuth: [] }]
     summary: カートからアイテムを削除
@@ -64,4 +68,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }

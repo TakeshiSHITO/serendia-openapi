@@ -1,6 +1,7 @@
 # 気に入ったルックの保存/解除と一覧。カーソルページネーション対応。
 /collections/list:
   get:
+    operationId: listCollections
     tags: [Collections]
     security: [{ bearerAuth: [] }]
     summary: 保存したLookの一覧を取得
@@ -17,6 +18,7 @@
 
 /collections/item:
   post:
+    operationId: addToCollection
     tags: [Collections]
     security: [{ bearerAuth: [] }]
     summary: Lookをコレクションに保存
@@ -27,9 +29,10 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '201': { $ref: ../../shared/responses/common.yaml#/components/responses/Created }
-      '409': { $ref: ../../shared/responses/common.yaml#/components/responses/Conflict }
+      '201': { $ref: ../../../shared/responses/common.yaml#/components/responses/Created }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
   delete:
+    operationId: removeFromCollection
     tags: [Collections]
     security: [{ bearerAuth: [] }]
     summary: 保存したLookを削除
@@ -40,4 +43,4 @@
         required: true
         schema: { type: string, format: uuid }
     responses:
-      '204': { $ref: ../../shared/responses/common.yaml#/components/responses/NoContent }
+      '204': { $ref: ../../../shared/responses/common.yaml#/components/responses/NoContent }
