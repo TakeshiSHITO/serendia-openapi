@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: Serendia Demo User API
+  version: 1.0.0
+  description: デモ環境向けのユーザー認証 API
+servers:
+  - url: https://api.serendia.com/demo
+    description: Demo environment
+tags:
+  - name: DemoAuth
+    description: デモ用のサインアップ・OTP ログイン・ログアウト
+  - name: DemoViewingSessions
+    description: デモキャンバスの閲覧セッション管理
+  - name: DemoCatalog
+    description: カード表示用カタログフィード
+  - name: DemoSelfAssets
+    description: セルフィーアップロードと利用許可管理
+paths:
+  /api/auth/signup:
+    $ref: ./paths/auth.yaml#/~1api~1auth~1signup
+  /api/auth/login/request:
+    $ref: ./paths/auth.yaml#/~1api~1auth~1login~1request
+  /api/auth/login/verify:
+    $ref: ./paths/auth.yaml#/~1api~1auth~1login~1verify
+  /api/auth/logout:
+    $ref: ./paths/auth.yaml#/~1api~1auth~1logout
+  /api/viewing-sessions:
+    $ref: ./paths/viewing_sessions.yaml#/~1api~1viewing-sessions
+  /api/viewing-sessions/{sessionId}/slots/fill:
+    $ref: ./paths/viewing_sessions.yaml#/~1api~1viewing-sessions~1{sessionId}~1slots~1fill
+  /api/viewing-sessions/{sessionId}/swipes:
+    $ref: ./paths/viewing_sessions.yaml#/~1api~1viewing-sessions~1{sessionId}~1swipes
+  /api/catalog/feed:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1feed
+  /api/self-assets:
+    $ref: ./paths/self_assets.yaml#/~1api~1self-assets
+  /api/self-assets/{selfAssetId}/grants:
+    $ref: ./paths/self_assets.yaml#/~1api~1self-assets~1{selfAssetId}~1grants
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

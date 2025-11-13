@@ -1,0 +1,111 @@
+components:
+  schemas:
+    SignupRequest:
+      type: object
+      required: [email, password, displayName]
+      properties:
+        email:
+          type: string
+          format: email
+          example: demo.user@example.com
+        password:
+          type: string
+          minLength: 8
+          maxLength: 72
+          format: password
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 50
+        marketingOptIn:
+          type: boolean
+          description: プロモーションメールの受信可否
+          default: false
+    Tokens:
+      type: object
+      required: [accessToken, refreshToken, expiresIn]
+      properties:
+        accessToken:
+          type: string
+          description: 短期有効な JWT アクセストークン
+        refreshToken:
+          type: string
+          description: 長期セッションを継続するためのトークン
+        expiresIn:
+          type: integer
+          format: int32
+          description: アクセストークンの有効期間（秒）
+          example: 3600
+    SignupResponse:
+      allOf:
+        - $ref: '#/components/schemas/Tokens'
+        - type: object
+          required: [userId]
+          properties:
+            userId:
+              type: string
+              format: uuid
+              description: デモユーザー ID
+            onboardingCompleted:
+              type: boolean
+              description: 初回オンボーディングが完了しているか
+              default: false
+    OtpChannel:
+      type: string
+      enum: [email, sms]
+      default: email
+      description: OTP を送信するチャネル
+    LoginRequestPayload:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+          example: demo.user@example.com
+        channel:
+          $ref: '#/components/schemas/OtpChannel'
+    LoginRequestResponse:
+      type: object
+      required: [requestId, expiresIn]
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: 後続の verify 呼び出しで利用する ID
+        expiresIn:
+          type: integer
+          format: int32
+          description: コードの有効期間（秒）
+          example: 300
+        maskedDestination:
+          type: string
+          description: マスクされた送信先
+          example: d***@example.com
+    LoginVerifyPayload:
+      type: object
+      required: [requestId, code]
+      properties:
+        requestId:
+          type: string
+          format: uuid
+        code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: '^[0-9]{6}$'
+          example: '123456'
+        deviceFingerprint:
+          type: string
+          description: 端末識別子（不正検知用）
+        rememberDevice:
+          type: boolean
+          description: 次回以降の OTP 省略フラグ
+          default: false
+    LogoutRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+          description: 無効化するリフレッシュトークン

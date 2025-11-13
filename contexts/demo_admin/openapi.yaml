@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: Serendia Demo Admin API
+  version: 1.0.0
+  description: カタログ全体を管理するデモ用管理者 API
+servers:
+  - url: https://api.serendia.com/demo-admin
+    description: Demo admin environment
+tags:
+  - name: DemoCatalogControl
+    description: すべてのブランドのカタログ管理
+paths:
+  /api/catalog/garments:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1garments
+  /api/catalog/garments/{garmentId}/variants:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1garments~1{garmentId}~1variants
+  /api/catalog/variants/{variantId}/media:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1variants~1{variantId}~1media
+  /api/catalog/variants/{variantId}/publish:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1variants~1{variantId}~1publish
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

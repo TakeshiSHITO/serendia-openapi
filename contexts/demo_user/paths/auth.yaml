@@ -1,0 +1,90 @@
+# デモユーザー向けの OTP 付き認証フロー。
+/api/auth/signup:
+  post:
+    operationId: demoSignup
+    tags: [DemoAuth]
+    security: []
+    summary: デモユーザーのメール登録
+    description: >
+      デモ環境で利用するためのユーザーをメールアドレスとパスワードで登録し、
+      すぐに利用できるアクセストークンとリフレッシュトークンを払い出します。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/SignupRequest }
+    responses:
+      '201':
+        description: User created for the demo environment
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/SignupResponse }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/auth/login/request:
+  post:
+    operationId: demoLoginRequest
+    tags: [DemoAuth]
+    security: []
+    summary: OTP をメールまたは SMS へ送信
+    description: >
+      入力されたメールアドレス宛に一回限りのログインコードを送信します。
+      正常時は 202 を返し、ユーザー存在有無を推測できないように振る舞います。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/LoginRequestPayload }
+    responses:
+      '202':
+        description: Verification code issued
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/LoginRequestResponse }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/auth/login/verify:
+  post:
+    operationId: demoLoginVerify
+    tags: [DemoAuth]
+    security: []
+    summary: OTP を検証してトークンを発行
+    description: >
+      login/request で払い出した requestId とコードを検証し、検証成功時に
+      アクセストークンとリフレッシュトークンを返します。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/LoginVerifyPayload }
+    responses:
+      '200':
+        description: Tokens issued
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/Tokens }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/auth/logout:
+  post:
+    operationId: demoLogout
+    tags: [DemoAuth]
+    security: [{ bearerAuth: [] }]
+    summary: リフレッシュトークンを無効化してログアウト
+    description: >
+      セッションで利用中のリフレッシュトークンを無効化し、以降のトークン発行を禁止します。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/LogoutRequest }
+    responses:
+      '200': { $ref: ../../../shared/responses/common.yaml#/components/responses/LogoutOK }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

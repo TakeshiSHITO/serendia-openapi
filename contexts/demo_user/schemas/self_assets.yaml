@@ -1,0 +1,134 @@
+components:
+  schemas:
+    SelfAssetPurpose:
+      type: string
+      enum: [tryon, profile, archive]
+      description: アセットの利用目的
+    SelfAssetRetention:
+      type: string
+      enum: [SESSION_ONLY, DAYS_30, DAYS_180, PERMANENT]
+      description: 保持期間ポリシー
+    SelfAssetStatus:
+      type: string
+      enum: [pending_upload, available, revoked, expired]
+    UploadStrategy:
+      type: string
+      enum: [direct, multipart]
+      default: direct
+    SelfAssetCreateRequest:
+      type: object
+      required: [fileName, mimeType, sizeBytes, retention, purpose]
+      properties:
+        fileName:
+          type: string
+          example: selfie.png
+        mimeType:
+          type: string
+          example: image/png
+        sizeBytes:
+          type: integer
+          minimum: 1
+        retention:
+          $ref: '#/components/schemas/SelfAssetRetention'
+        purpose:
+          $ref: '#/components/schemas/SelfAssetPurpose'
+        uploadStrategy:
+          $ref: '#/components/schemas/UploadStrategy'
+        checksum:
+          type: string
+          description: Base64 encoded SHA256
+        metadata:
+          type: object
+          additionalProperties: { type: string }
+    UploadTicket:
+      type: object
+      required: [uploadUrl, expiresAt]
+      properties:
+        uploadUrl:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+        headers:
+          type: object
+          additionalProperties: { type: string }
+    SelfAsset:
+      type: object
+      required:
+        - selfAssetId
+        - status
+        - purpose
+        - retention
+        - createdAt
+      properties:
+        selfAssetId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/SelfAssetStatus'
+        purpose:
+          $ref: '#/components/schemas/SelfAssetPurpose'
+        retention:
+          $ref: '#/components/schemas/SelfAssetRetention'
+        createdAt:
+          type: string
+          format: date-time
+        fileName:
+          type: string
+        mimeType:
+          type: string
+        sizeBytes:
+          type: integer
+        uploadTicket:
+          $ref: '#/components/schemas/UploadTicket'
+          nullable: true
+        secureUrl:
+          type: string
+          format: uri
+          nullable: true
+    SelfAssetGrantScope:
+      type: string
+      enum: [tryon_render, moderation, export]
+    SelfAssetGrantRequest:
+      type: object
+      required: [scope]
+      properties:
+        scope:
+          $ref: '#/components/schemas/SelfAssetGrantScope'
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        consumerService:
+          type: string
+          description: 利用するドメインサービス名
+        maxViews:
+          type: integer
+          minimum: 1
+          nullable: true
+    SelfAssetGrant:
+      type: object
+      required: [grantId, selfAssetId, scope, createdAt]
+      properties:
+        grantId:
+          type: string
+          format: uuid
+        selfAssetId:
+          type: string
+          format: uuid
+        scope:
+          $ref: '#/components/schemas/SelfAssetGrantScope'
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        downloadUrl:
+          type: string
+          format: uri
+          nullable: true
+        token:
+          type: string

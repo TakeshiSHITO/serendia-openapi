@@ -1,0 +1,202 @@
+components:
+  schemas:
+    ViewingSurface:
+      type: string
+      description: カードを表示する画面種別
+      enum: [demoCanvas, lookbook]
+      default: demoCanvas
+    FeedVariantCard:
+      type: object
+      required: [cardId, variantId, lookId, brandName, title, imageUrl]
+      properties:
+        cardId:
+          type: string
+          format: uuid
+          description: スロット内で利用するカード ID
+        variantId:
+          type: string
+          format: uuid
+        lookId:
+          type: string
+          format: uuid
+        brandName:
+          type: string
+        title:
+          type: string
+        imageUrl:
+          type: string
+          format: uri
+        price:
+          $ref: '#/components/schemas/VariantPrice'
+        tags:
+          type: array
+          items: { type: string }
+        availability:
+          type: string
+          enum: [in_stock, low_stock, sold_out]
+          default: in_stock
+    VariantPrice:
+      type: object
+      required: [currency, amount]
+      properties:
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: JPY
+        amount:
+          type: integer
+          description: 最小単位での価格
+          example: 8900
+    ViewingSessionCreateRequest:
+      type: object
+      required: [surface, deviceId]
+      properties:
+        surface:
+          $ref: '#/components/schemas/ViewingSurface'
+        deviceId:
+          type: string
+          description: 匿名端末 ID
+        seedVariantIds:
+          type: array
+          description: 初期候補を固定するためのバリアント ID 群
+          items:
+            type: string
+            format: uuid
+          maxItems: 20
+        locale:
+          type: string
+          example: ja-JP
+        appVersion:
+          type: string
+        initialSlotCount:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 3
+    ViewingSession:
+      type: object
+      required: [sessionId, surface, createdAt, expiresAt]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        surface:
+          $ref: '#/components/schemas/ViewingSurface'
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        seedVariantIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        remainingSwipes:
+          type: integer
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewingSlot'
+    ViewingSlot:
+      type: object
+      required: [slotId, position, state]
+      properties:
+        slotId:
+          type: string
+          format: uuid
+        position:
+          type: integer
+          minimum: 0
+        state:
+          type: string
+          enum: [empty, filled, locked]
+        card:
+          $ref: '#/components/schemas/FeedVariantCard'
+          nullable: true
+    SlotFillInstruction:
+      type: object
+      required: [slotId, count]
+      properties:
+        slotId:
+          type: string
+          format: uuid
+        count:
+          type: integer
+          minimum: 1
+          maximum: 10
+        fallbackStrategy:
+          type: string
+          enum: [popular, recent, personalized]
+          default: personalized
+        allowDuplicates:
+          type: boolean
+          default: false
+    SlotFillRequest:
+      type: object
+      required: [slots]
+      properties:
+        slots:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/SlotFillInstruction'
+    FilledSlot:
+      type: object
+      required: [slotId, cards]
+      properties:
+        slotId:
+          type: string
+          format: uuid
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedVariantCard'
+    SlotFillResponse:
+      type: object
+      required: [sessionId, filledSlots]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        filledSlots:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilledSlot'
+    SwipeAction:
+      type: string
+      enum: [LIKE, PASS]
+    SwipeEventRequest:
+      type: object
+      required: [slotId, cardId, action, occurredAt]
+      properties:
+        slotId:
+          type: string
+          format: uuid
+        cardId:
+          type: string
+          format: uuid
+        action:
+          $ref: '#/components/schemas/SwipeAction'
+        reason:
+          type: string
+          description: PASS 時の理由
+        occurredAt:
+          type: string
+          format: date-time
+        deviceFingerprint:
+          type: string
+          description: 不正検知用の端末識別子
+    CatalogFeedResponse:
+      type: object
+      required: [items]
+      properties:
+        cursor:
+          type: string
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedVariantCard'

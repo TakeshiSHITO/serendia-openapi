@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: Serendia Demo Shop API
+  version: 1.0.0
+  description: デモ用ショップロール向けのカタログ登録 API
+servers:
+  - url: https://api.serendia.com/demo-shop
+    description: Demo shop environment
+tags:
+  - name: DemoCatalogAuthoring
+    description: デモ用のガーメントとバリアント登録
+paths:
+  /api/catalog/garments:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1garments
+  /api/catalog/garments/{garmentId}/variants:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1garments~1{garmentId}~1variants
+  /api/catalog/variants/{variantId}/media:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1variants~1{variantId}~1media
+  /api/catalog/variants/{variantId}/publish:
+    $ref: ./paths/catalog.yaml#/~1api~1catalog~1variants~1{variantId}~1publish
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

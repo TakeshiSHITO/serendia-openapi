@@ -1,0 +1,200 @@
+components:
+  schemas:
+    GarmentCategory:
+      type: string
+      description: Garment category code
+      enum:
+        - TOPS
+        - BOTTOMS
+        - OUTER
+        - ONEPIECE
+        - ACCESSORY
+    Price:
+      type: object
+      required: [currency, amount]
+      properties:
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: JPY
+        amount:
+          type: integer
+          description: 通貨の最小単位での金額
+          example: 12900
+    GarmentCreateRequest:
+      type: object
+      required: [brandId, title, category]
+      properties:
+        brandId:
+          type: string
+          format: uuid
+          description: 操作するブランド ID。トークンに紐づくブランドと一致する必要があります。
+        title:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 2000
+        category:
+          $ref: '#/components/schemas/GarmentCategory'
+        tags:
+          type: array
+          items: { type: string }
+        careInstructions:
+          type: string
+        materialRatio:
+          type: object
+          additionalProperties: { type: string }
+    Garment:
+      type: object
+      required: [garmentId, brandId, title, category, createdAt, updatedAt]
+      properties:
+        garmentId:
+          type: string
+          format: uuid
+        brandId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: '#/components/schemas/GarmentCategory'
+        tags:
+          type: array
+          items: { type: string }
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    VariantStatus:
+      type: string
+      enum: [DRAFT, PENDING_REVIEW, PUBLISHED, ARCHIVED]
+    VariantCreateRequest:
+      type: object
+      required: [sku, colorName, size, price, stockQuantity]
+      properties:
+        sku:
+          type: string
+          maxLength: 50
+        colorName:
+          type: string
+          maxLength: 40
+        colorCode:
+          type: string
+          description: HEX カラー (例 #FFFFFF)
+        size:
+          type: string
+          maxLength: 20
+        price:
+          $ref: '#/components/schemas/Price'
+        stockQuantity:
+          type: integer
+          minimum: 0
+        barcode:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: { type: string }
+    Variant:
+      type: object
+      required:
+        - variantId
+        - garmentId
+        - sku
+        - status
+        - price
+        - stockQuantity
+        - createdAt
+      properties:
+        variantId:
+          type: string
+          format: uuid
+        garmentId:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        status:
+          $ref: '#/components/schemas/VariantStatus'
+        colorName:
+          type: string
+        colorCode:
+          type: string
+        size:
+          type: string
+        price:
+          $ref: '#/components/schemas/Price'
+        stockQuantity:
+          type: integer
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/VariantMedia'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    MediaKind:
+      type: string
+      enum: [model, flatlay, detail, video]
+    VariantMediaRequest:
+      type: object
+      required: [url, kind]
+      properties:
+        url:
+          type: string
+          format: uri
+        kind:
+          $ref: '#/components/schemas/MediaKind'
+        isPrimary:
+          type: boolean
+          default: false
+        sortOrder:
+          type: integer
+          minimum: 0
+        backgroundColor:
+          type: string
+          description: HEX カラーコード
+    VariantMedia:
+      type: object
+      required: [mediaId, variantId, url, kind]
+      properties:
+        mediaId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        url:
+          type: string
+          format: uri
+        kind:
+          $ref: '#/components/schemas/MediaKind'
+        isPrimary:
+          type: boolean
+        sortOrder:
+          type: integer
+        backgroundColor:
+          type: string
+    PublishChannel:
+      type: string
+      enum: [demo_app, affiliate, sandbox_partner]
+    VariantPublishRequest:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublishChannel'
+        effectiveAt:
+          type: string
+          format: date-time
+        comment:
+          type: string
