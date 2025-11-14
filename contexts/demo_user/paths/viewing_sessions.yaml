@@ -15,7 +15,7 @@
           schema: { $ref: ../schemas/viewing.yaml#/components/schemas/ViewingSessionCreateRequest }
     responses:
       '201':
-        description: Session created
+        description: セッションを作成しました
         content:
           application/json:
             schema: { $ref: ../schemas/viewing.yaml#/components/schemas/ViewingSession }
@@ -44,7 +44,7 @@
           schema: { $ref: ../schemas/viewing.yaml#/components/schemas/SlotFillRequest }
     responses:
       '200':
-        description: Slots filled
+        description: スロットを補充しました
         content:
           application/json:
             schema: { $ref: ../schemas/viewing.yaml#/components/schemas/SlotFillResponse }

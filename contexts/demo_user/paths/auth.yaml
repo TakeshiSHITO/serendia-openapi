@@ -15,7 +15,7 @@
           schema: { $ref: ../schemas/auth.yaml#/components/schemas/SignupRequest }
     responses:
       '201':
-        description: User created for the demo environment
+        description: デモ環境向けユーザーを作成しました
         content:
           application/json:
             schema: { $ref: ../schemas/auth.yaml#/components/schemas/SignupResponse }
@@ -62,7 +62,7 @@
           schema: { $ref: ../schemas/auth.yaml#/components/schemas/LoginVerifyPayload }
     responses:
       '200':
-        description: Tokens issued
+        description: トークンを発行しました
         content:
           application/json:
             schema: { $ref: ../schemas/auth.yaml#/components/schemas/Tokens }

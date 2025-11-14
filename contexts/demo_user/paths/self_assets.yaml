@@ -15,7 +15,7 @@
           schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAssetCreateRequest }
     responses:
       '201':
-        description: Self asset slot allocated
+        description: セルフィーアップロード枠を確保しました
         content:
           application/json:
             schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAsset }
@@ -45,7 +45,7 @@
           schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAssetGrantRequest }
     responses:
       '201':
-        description: Grant created
+        description: 利用許可を発行しました
         content:
           application/json:
             schema: { $ref: ../schemas/self_assets.yaml#/components/schemas/SelfAssetGrant }

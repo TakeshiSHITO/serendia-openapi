@@ -24,7 +24,7 @@
           nullable: true
     responses:
       '200':
-        description: Feed delivered
+        description: フィードを取得しました
         content:
           application/json:
             schema: { $ref: ../schemas/viewing.yaml#/components/schemas/CatalogFeedResponse }

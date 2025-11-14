@@ -15,7 +15,7 @@
           schema: { $ref: ../schemas/catalog.yaml#/components/schemas/GarmentCreateRequest }
     responses:
       '201':
-        description: Garment created
+        description: ガーメントを登録しました
         content:
           application/json:
             schema: { $ref: ../schemas/catalog.yaml#/components/schemas/Garment }
@@ -45,7 +45,7 @@
           schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantCreateRequest }
     responses:
       '201':
-        description: Variant created
+        description: バリアントを登録しました
         content:
           application/json:
             schema: { $ref: ../schemas/catalog.yaml#/components/schemas/Variant }
@@ -75,7 +75,7 @@
           schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantMediaRequest }
     responses:
       '201':
-        description: Media registered
+        description: メディアを登録しました
         content:
           application/json:
             schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantMedia }
@@ -105,7 +105,7 @@
           schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantPublishRequest }
     responses:
       '200':
-        description: Variant published
+        description: バリアントを公開しました
         content:
           application/json:
             schema: { $ref: ../schemas/catalog.yaml#/components/schemas/Variant }
