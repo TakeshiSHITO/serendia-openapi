@@ -1,0 +1,80 @@
+# デモ用閲覧セッションとスロット操作。
+/api/viewing-sessions:
+  post:
+    operationId: demoCreateViewingSession
+    tags: [DemoViewingSessions]
+    security: [{ bearerAuth: [] }]
+    summary: セッション開始
+    description: >
+      カード表示面のナビゲーションに備えて閲覧セッションを開始し、
+      初期スロットと残りスワイプ数を払い出します。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/viewing.yaml#/components/schemas/ViewingSessionCreateRequest }
+    responses:
+      '201':
+        description: Session created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/viewing.yaml#/components/schemas/ViewingSession }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/viewing-sessions/{sessionId}/slots/fill:
+  post:
+    operationId: demoFillViewingSlots
+    tags: [DemoViewingSessions]
+    security: [{ bearerAuth: [] }]
+    summary: カード枠を埋める
+    description: >
+      指定したセッション内の空きスロットにカード候補を流し込みます。
+    parameters:
+      - name: sessionId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+        description: 閲覧セッション ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/viewing.yaml#/components/schemas/SlotFillRequest }
+    responses:
+      '200':
+        description: Slots filled
+        content:
+          application/json:
+            schema: { $ref: ../schemas/viewing.yaml#/components/schemas/SlotFillResponse }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/viewing-sessions/{sessionId}/swipes:
+  post:
+    operationId: demoRecordSwipe
+    tags: [DemoViewingSessions]
+    security: [{ bearerAuth: [] }]
+    summary: スワイプ操作（LIKE/PASS）
+    description: >
+      表示中カードに対するユーザー操作を記録し、スロットの状態を更新します。
+    parameters:
+      - name: sessionId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+        description: 閲覧セッション ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/viewing.yaml#/components/schemas/SwipeEventRequest }
+    responses:
+      '202': { $ref: ../../../shared/responses/common.yaml#/components/responses/Accepted }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

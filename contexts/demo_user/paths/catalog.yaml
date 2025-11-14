@@ -1,0 +1,32 @@
+# カード表示用の公開バリアントフィード。
+/api/catalog/feed:
+  get:
+    operationId: demoCatalogFeed
+    tags: [DemoCatalog]
+    security: []
+    summary: 公開済みバリアント一覧を取得
+    description: >
+      CandidateProviderPort を通じてフィード表示に利用するカード候補を取得します。
+    parameters:
+      - name: limit
+        in: query
+        description: 取得件数
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+      - name: cursor
+        in: query
+        description: 続きを取得するためのカーソル
+        schema:
+          type: string
+          nullable: true
+    responses:
+      '200':
+        description: Feed delivered
+        content:
+          application/json:
+            schema: { $ref: ../schemas/viewing.yaml#/components/schemas/CatalogFeedResponse }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

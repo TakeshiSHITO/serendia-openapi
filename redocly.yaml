@@ -20,3 +20,6 @@ apis:
   admin@latest:
     root: contexts/admin/openapi.yaml
     output: docs/admin-api.html
+  demo_admin@latest:
+    root: contexts/demo_admin/openapi.yaml
+    output: docs/demo-admin-api.html

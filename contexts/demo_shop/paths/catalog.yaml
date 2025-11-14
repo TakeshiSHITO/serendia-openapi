@@ -1,0 +1,116 @@
+# カタログ登録系エンドポイント。
+/api/catalog/garments:
+  post:
+    operationId: demoCreateGarment
+    tags: [DemoCatalogAuthoring]
+    security: [{ bearerAuth: [] }]
+    summary: ガーメント（商品）の登録
+    description: >
+      ショップ担当者が自ブランド向けに新しいガーメントを登録します。
+      実運用ではトークンに紐づくブランド ID と一致するかを SelfHost 側でチェックします。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/catalog.yaml#/components/schemas/GarmentCreateRequest }
+    responses:
+      '201':
+        description: Garment created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/catalog.yaml#/components/schemas/Garment }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/catalog/garments/{garmentId}/variants:
+  post:
+    operationId: demoCreateVariant
+    tags: [DemoCatalogAuthoring]
+    security: [{ bearerAuth: [] }]
+    summary: サイズ／色ごとのバリアント登録
+    description: >
+      既存ガーメントに対して色・サイズなど SKU 単位のバリアントを登録します。
+    parameters:
+      - name: garmentId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+        description: ガーメント ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantCreateRequest }
+    responses:
+      '201':
+        description: Variant created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/catalog.yaml#/components/schemas/Variant }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/catalog/variants/{variantId}/media:
+  post:
+    operationId: demoAddVariantMedia
+    tags: [DemoCatalogAuthoring]
+    security: [{ bearerAuth: [] }]
+    summary: 商品写真URLの追加
+    description: >
+      バリアントにひもづく追加メディアを登録します。S3 等へアップロード済みの URL を指定します。
+    parameters:
+      - name: variantId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+        description: バリアント ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantMediaRequest }
+    responses:
+      '201':
+        description: Media registered
+        content:
+          application/json:
+            schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantMedia }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/catalog/variants/{variantId}/publish:
+  post:
+    operationId: demoPublishVariant
+    tags: [DemoCatalogAuthoring]
+    security: [{ bearerAuth: [] }]
+    summary: バリアントの公開（PUBLISHED にする）
+    description: >
+      対象バリアントの公開状態を PUBLISHED に変更し、TryOn/Catalog から参照可能にします。
+    parameters:
+      - name: variantId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+        description: バリアント ID
+    requestBody:
+      required: false
+      content:
+        application/json:
+          schema: { $ref: ../schemas/catalog.yaml#/components/schemas/VariantPublishRequest }
+    responses:
+      '200':
+        description: Variant published
+        content:
+          application/json:
+            schema: { $ref: ../schemas/catalog.yaml#/components/schemas/Variant }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '404': { $ref: ../../../shared/responses/common.yaml#/components/responses/NotFound }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '422': { $ref: ../../../shared/responses/common.yaml#/components/responses/UnprocessableEntity }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
