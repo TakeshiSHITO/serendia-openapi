@@ -1,0 +1,42 @@
+# デモショップ向けの簡易認証エンドポイント。
+/api/auth/signup:
+  post:
+    operationId: demoShopSignup
+    tags: [DemoShopAuth]
+    security: []
+    summary: ショップアカウントの新規登録
+    description: ショップ名・担当者名・メールアドレス・パスワードを受け取り、新しいデモショップアカウントを発行します。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/DemoShopSignupRequest }
+    responses:
+      '201':
+        description: Account created
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/DemoShopTokens }
+      '409': { $ref: ../../../shared/responses/common.yaml#/components/responses/Conflict }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }
+
+/api/auth/login:
+  post:
+    operationId: demoShopLogin
+    tags: [DemoShopAuth]
+    security: []
+    summary: ショップアカウントでログイン
+    description: 既存のデモショップアカウントでログインし、アクセストークンとリフレッシュトークンを取得します。
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ../schemas/auth.yaml#/components/schemas/DemoShopLoginRequest }
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema: { $ref: ../schemas/auth.yaml#/components/schemas/DemoShopTokens }
+      '401': { $ref: ../../../shared/responses/common.yaml#/components/responses/Unauthorized }
+      '500': { $ref: ../../../shared/responses/common.yaml#/components/responses/InternalServerError }

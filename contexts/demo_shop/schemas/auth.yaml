@@ -1,0 +1,47 @@
+components:
+  schemas:
+    DemoShopSignupRequest:
+      type: object
+      required: [shopName, contactName, email, password]
+      properties:
+        shopName:
+          type: string
+          description: デモショップとして表示される名称
+          minLength: 1
+          maxLength: 100
+        contactName:
+          type: string
+          description: 担当者の氏名
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          description: ログインに使用するメールアドレス
+        password:
+          type: string
+          minLength: 8
+          description: 8 文字以上のパスワード
+    DemoShopLoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          description: ショップアカウントのメールアドレス
+        password:
+          type: string
+          minLength: 8
+          description: ショップアカウントのパスワード
+    DemoShopTokens:
+      type: object
+      description: 認証後に返却されるトークンのセット
+      properties:
+        accessToken:
+          type: string
+          description: API 呼び出し時に使用するベアラートークン
+        refreshToken:
+          type: string
+          description: アクセストークンの更新に使用
+      required: [accessToken]

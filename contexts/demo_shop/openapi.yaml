@@ -9,6 +9,8 @@ servers:
 tags:
   - name: DemoCatalogAuthoring
     description: デモ用のガーメントとバリアント登録
+  - name: DemoShopAuth
+    description: デモショップ担当者向けの認証
 paths:
   /api/catalog/garments:
     $ref: ./paths/catalog.yaml#/~1api~1catalog~1garments
@@ -18,6 +20,10 @@ paths:
     $ref: ./paths/catalog.yaml#/~1api~1catalog~1variants~1{variantId}~1media
   /api/catalog/variants/{variantId}/publish:
     $ref: ./paths/catalog.yaml#/~1api~1catalog~1variants~1{variantId}~1publish
+  /api/auth/signup:
+    $ref: ./paths/auth.yaml#/~1api~1auth~1signup
+  /api/auth/login:
+    $ref: ./paths/auth.yaml#/~1api~1auth~1login
 components:
   securitySchemes:
     bearerAuth:
