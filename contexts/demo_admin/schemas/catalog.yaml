@@ -122,6 +122,8 @@ components:
           type: integer
         media:
           type: array
+          maxItems: 8
+          description: 1 バリアントにつき登録できる写真は最大 8 枚
           items:
             $ref: '#/components/schemas/VariantMedia'
         createdAt:

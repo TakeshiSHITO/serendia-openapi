@@ -61,6 +61,7 @@
     summary: Variant のメディア追加
     description: >
       全ブランドのバリアントに対して公式画像/動画を紐づけます。
+      写真は 1 バリアントあたり最大 8 枚まで登録できます。
     parameters:
       - name: variantId
         in: path

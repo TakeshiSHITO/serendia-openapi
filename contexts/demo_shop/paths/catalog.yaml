@@ -62,6 +62,7 @@
     summary: 商品写真URLの追加
     description: >
       バリアントにひもづく追加メディアを登録します。S3 等へアップロード済みの URL を指定します。
+      写真は 1 バリアントあたり最大 8 枚まで登録できます。
     parameters:
       - name: variantId
         in: path
